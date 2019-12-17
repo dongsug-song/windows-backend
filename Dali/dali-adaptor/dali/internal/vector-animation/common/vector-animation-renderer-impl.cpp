@@ -65,6 +65,11 @@ void VectorAnimationRenderer::Initialize( const std::string& url )
   mPlugin.Initialize( url );
 }
 
+void VectorAnimationRenderer::Finalize()
+{
+  mPlugin.Finalize();
+}
+
 void VectorAnimationRenderer::SetRenderer( Dali::Renderer renderer )
 {
   mPlugin.SetRenderer( renderer );
@@ -93,6 +98,11 @@ float VectorAnimationRenderer::GetFrameRate() const
 void VectorAnimationRenderer::GetDefaultSize( uint32_t& width, uint32_t& height ) const
 {
   mPlugin.GetDefaultSize( width, height );
+}
+
+void VectorAnimationRenderer::GetLayerInfo( Property::Map& map ) const
+{
+  mPlugin.GetLayerInfo( map );
 }
 
 Dali::VectorAnimationRenderer::UploadCompletedSignalType& VectorAnimationRenderer::UploadCompletedSignal()

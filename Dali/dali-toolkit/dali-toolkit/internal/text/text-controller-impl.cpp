@@ -20,10 +20,12 @@
 
 // EXTERNAL INCLUDES
 #include <dali/public-api/adaptor-framework/key.h>
+#include <dali/public-api/rendering/renderer.h>
 #include <dali/integration-api/debug.h>
 #include <limits>
 
 // INTERNAL INCLUDES
+#include <dali-toolkit/devel-api/controls/control-depth-index-ranges.h>
 #include <dali-toolkit/internal/text/bidirectional-support.h>
 #include <dali-toolkit/internal/text/character-set-conversion.h>
 #include <dali-toolkit/internal/text/color-segmentation.h>
@@ -33,6 +35,8 @@
 #include <dali-toolkit/internal/text/shaper.h>
 #include <dali-toolkit/internal/text/text-control-interface.h>
 #include <dali-toolkit/internal/text/text-run-container.h>
+
+using namespace Dali;
 
 namespace
 {
@@ -55,6 +59,44 @@ struct SelectionBoxInfo
 const float MAX_FLOAT = std::numeric_limits<float>::max();
 const float MIN_FLOAT = std::numeric_limits<float>::min();
 const Dali::Toolkit::Text::CharacterDirection LTR = false; ///< Left To Right direction
+
+#define MAKE_SHADER(A)#A
+
+const char* VERTEX_SHADER_BACKGROUND = MAKE_SHADER(
+attribute mediump vec2    aPosition;
+attribute mediump vec4    aColor;
+varying   mediump vec4    vColor;
+uniform   highp mat4      uMvpMatrix;
+
+void main()
+{
+  mediump vec4 position = vec4( aPosition, 0.0, 1.0 );
+  gl_Position = uMvpMatrix * position;
+  vColor = aColor;
+}
+);
+
+const char* FRAGMENT_SHADER_BACKGROUND = MAKE_SHADER(
+varying mediump vec4      vColor;
+uniform lowp    vec4      uColor;
+
+void main()
+{
+  gl_FragColor = vColor * uColor;
+}
+);
+
+struct BackgroundVertex
+{
+  Vector2 mPosition;        ///< Vertex posiiton
+  Vector4 mColor;           ///< Vertex color
+};
+
+struct BackgroundMesh
+{
+  Vector< BackgroundVertex > mVertices;    ///< container of vertices
+  Vector< unsigned short > mIndices;       ///< container of indices
+};
 
 } // namespace
 
@@ -505,11 +547,6 @@ void Controller::Impl::ClearFullModelData( OperationsMask operations )
     mModel->mLogicalModel->mParagraphInfo.Clear();
   }
 
-  if( NO_OPERATION != ( GET_WORD_BREAKS & operations ) )
-  {
-    mModel->mLogicalModel->mLineBreakInfo.Clear();
-  }
-
   if( NO_OPERATION != ( GET_SCRIPTS & operations ) )
   {
     mModel->mLogicalModel->mScriptRuns.Clear();
@@ -563,6 +600,7 @@ void Controller::Impl::ClearFullModelData( OperationsMask operations )
   if( NO_OPERATION != ( COLOR & operations ) )
   {
     mModel->mVisualModel->mColorIndices.Clear();
+    mModel->mVisualModel->mBackgroundColorIndices.Clear();
   }
 }
 
@@ -582,15 +620,6 @@ void Controller::Impl::ClearCharacterModelData( CharacterIndex startIndex, Chara
     ClearCharacterRuns( startIndex,
                         endIndex,
                         mModel->mLogicalModel->mParagraphInfo );
-  }
-
-  if( NO_OPERATION != ( GET_WORD_BREAKS & operations ) )
-  {
-    // Clear the word break info.
-    WordBreakInfo* wordBreakInfoBuffer = mModel->mLogicalModel->mWordBreakInfo.Begin();
-
-    mModel->mLogicalModel->mWordBreakInfo.Erase( wordBreakInfoBuffer + startIndex,
-                                         wordBreakInfoBuffer + endIndexPlusOne );
   }
 
   if( NO_OPERATION != ( GET_SCRIPTS & operations ) )
@@ -755,6 +784,13 @@ void Controller::Impl::ClearGlyphModelData( CharacterIndex startIndex, Character
       mModel->mVisualModel->mColorIndices.Erase( colorIndexBuffer + mTextUpdateInfo.mStartGlyphIndex,
                                                  colorIndexBuffer + endGlyphIndexPlusOne );
     }
+
+    if( 0u != mModel->mVisualModel->mBackgroundColorIndices.Count() )
+    {
+      ColorIndex* backgroundColorIndexBuffer = mModel->mVisualModel->mBackgroundColorIndices.Begin();
+      mModel->mVisualModel->mBackgroundColorIndices.Erase( backgroundColorIndexBuffer + mTextUpdateInfo.mStartGlyphIndex,
+                                                           backgroundColorIndexBuffer + endGlyphIndexPlusOne );
+    }
   }
 }
 
@@ -874,19 +910,6 @@ bool Controller::Impl::UpdateModel( OperationsMask operationsRequired )
     // Create the paragraph info.
     mModel->mLogicalModel->CreateParagraphInfo( startIndex,
                                                 requestedNumberOfCharacters );
-    updated = true;
-  }
-
-  Vector<WordBreakInfo>& wordBreakInfo = mModel->mLogicalModel->mWordBreakInfo;
-  if( NO_OPERATION != ( GET_WORD_BREAKS & operations ) )
-  {
-    // Retrieves the word break info. The word break info is used to layout the text (where to wrap the text in lines).
-    wordBreakInfo.Resize( numberOfCharacters, TextAbstraction::WORD_NO_BREAK );
-
-    SetWordBreakInfo( utf32Characters,
-                      startIndex,
-                      requestedNumberOfCharacters,
-                      wordBreakInfo );
     updated = true;
   }
 
@@ -1053,6 +1076,41 @@ bool Controller::Impl::UpdateModel( OperationsMask operationsRequired )
     updated = true;
   }
 
+  if( ( NULL != mEventData ) &&
+      mEventData->mPreEditFlag &&
+      ( 0u != mModel->mVisualModel->mCharactersToGlyph.Count() ) )
+  {
+    Dali::InputMethodContext::PreeditStyle type = mEventData->mInputMethodContext.GetPreeditStyle();
+
+    switch( type )
+    {
+      case Dali::InputMethodContext::PreeditStyle::UNDERLINE:
+      {
+        // Add the underline for the pre-edit text.
+        const GlyphIndex* const charactersToGlyphBuffer = mModel->mVisualModel->mCharactersToGlyph.Begin();
+        const Length* const glyphsPerCharacterBuffer = mModel->mVisualModel->mGlyphsPerCharacter.Begin();
+
+        const GlyphIndex glyphStart = *( charactersToGlyphBuffer + mEventData->mPreEditStartPosition );
+        const CharacterIndex lastPreEditCharacter = mEventData->mPreEditStartPosition + ( ( mEventData->mPreEditLength > 0u ) ? mEventData->mPreEditLength - 1u : 0u );
+        const Length numberOfGlyphsLastCharacter = *( glyphsPerCharacterBuffer + lastPreEditCharacter );
+        const GlyphIndex glyphEnd = *( charactersToGlyphBuffer + lastPreEditCharacter ) + ( numberOfGlyphsLastCharacter > 1u ? numberOfGlyphsLastCharacter - 1u : 0u );
+
+        GlyphRun underlineRun;
+        underlineRun.glyphIndex = glyphStart;
+        underlineRun.numberOfGlyphs = 1u + glyphEnd - glyphStart;
+
+        mModel->mVisualModel->mUnderlineRuns.PushBack( underlineRun );
+        break;
+      }
+      // TODO :  At this moment, other styles for preedit are not implemented yet.
+      case Dali::InputMethodContext::PreeditStyle::REVERSE:
+      case Dali::InputMethodContext::PreeditStyle::HIGHLIGHT:
+      case Dali::InputMethodContext::PreeditStyle::NONE:
+      default:
+        break;
+    }
+  }
+
   if( NO_OPERATION != ( COLOR & operations ) )
   {
     // Set the color runs in glyphs.
@@ -1065,29 +1123,19 @@ bool Controller::Impl::UpdateModel( OperationsMask operationsRequired )
                               mModel->mVisualModel->mColors,
                               mModel->mVisualModel->mColorIndices );
 
+    // Set the background color runs in glyphs.
+    SetColorSegmentationInfo( mModel->mLogicalModel->mBackgroundColorRuns,
+                              mModel->mVisualModel->mCharactersToGlyph,
+                              mModel->mVisualModel->mGlyphsPerCharacter,
+                              startIndex,
+                              mTextUpdateInfo.mStartGlyphIndex,
+                              requestedNumberOfCharacters,
+                              mModel->mVisualModel->mBackgroundColors,
+                              mModel->mVisualModel->mBackgroundColorIndices );
+
     updated = true;
   }
 
-  if( ( NULL != mEventData ) &&
-      mEventData->mPreEditFlag &&
-      ( 0u != mModel->mVisualModel->mCharactersToGlyph.Count() ) )
-  {
-    // Add the underline for the pre-edit text.
-    const GlyphIndex* const charactersToGlyphBuffer = mModel->mVisualModel->mCharactersToGlyph.Begin();
-    const Length* const glyphsPerCharacterBuffer = mModel->mVisualModel->mGlyphsPerCharacter.Begin();
-
-    const GlyphIndex glyphStart = *( charactersToGlyphBuffer + mEventData->mPreEditStartPosition );
-    const CharacterIndex lastPreEditCharacter = mEventData->mPreEditStartPosition + ( ( mEventData->mPreEditLength > 0u ) ? mEventData->mPreEditLength - 1u : 0u );
-    const Length numberOfGlyphsLastCharacter = *( glyphsPerCharacterBuffer + lastPreEditCharacter );
-    const GlyphIndex glyphEnd = *( charactersToGlyphBuffer + lastPreEditCharacter ) + ( numberOfGlyphsLastCharacter > 1u ? numberOfGlyphsLastCharacter - 1u : 0u );
-
-    GlyphRun underlineRun;
-    underlineRun.glyphIndex = glyphStart;
-    underlineRun.numberOfGlyphs = 1u + glyphEnd - glyphStart;
-
-    // TODO: At the moment the underline runs are only for pre-edit.
-    mModel->mVisualModel->mUnderlineRuns.PushBack( underlineRun );
-  }
 
   // The estimated number of lines. Used to avoid reallocations when layouting.
   mTextUpdateInfo.mEstimatedNumberOfLines = std::max( mModel->mVisualModel->mLines.Count(), mModel->mLogicalModel->mParagraphInfo.Count() );
@@ -3073,6 +3121,169 @@ void Controller::Impl::RequestRelayout()
   {
     mControlInterface->RequestTextRelayout();
   }
+}
+
+Actor Controller::Impl::CreateBackgroundActor()
+{
+  // NOTE: Currently we only support background color for one line left-to-right text,
+  //       so the following calculation is based on one line left-to-right text only!
+
+  Actor actor;
+
+  Length numberOfGlyphs = mView.GetNumberOfGlyphs();
+  if( numberOfGlyphs > 0u )
+  {
+    Vector<GlyphInfo> glyphs;
+    glyphs.Resize( numberOfGlyphs );
+
+    Vector<Vector2> positions;
+    positions.Resize( numberOfGlyphs );
+
+    // Get the line where the glyphs are laid-out.
+    const LineRun* lineRun = mModel->mVisualModel->mLines.Begin();
+    float alignmentOffset = lineRun->alignmentOffset;
+    numberOfGlyphs = mView.GetGlyphs( glyphs.Begin(),
+                                      positions.Begin(),
+                                      alignmentOffset,
+                                      0u,
+                                      numberOfGlyphs );
+
+    glyphs.Resize( numberOfGlyphs );
+    positions.Resize( numberOfGlyphs );
+
+    const GlyphInfo* const glyphsBuffer = glyphs.Begin();
+    const Vector2* const positionsBuffer = positions.Begin();
+
+    BackgroundMesh mesh;
+    mesh.mVertices.Reserve( 4u * glyphs.Size() );
+    mesh.mIndices.Reserve( 6u * glyphs.Size() );
+
+    const Vector2 textSize = mView.GetLayoutSize();
+
+    const float offsetX = textSize.width * 0.5f;
+    const float offsetY = textSize.height * 0.5f;
+
+    const Vector4* const backgroundColorsBuffer = mView.GetBackgroundColors();
+    const ColorIndex* const backgroundColorIndicesBuffer = mView.GetBackgroundColorIndices();
+
+    Vector4 quad;
+    uint32_t numberOfQuads = 0u;
+
+    for( uint32_t i = 0, glyphSize = glyphs.Size(); i < glyphSize; ++i )
+    {
+      const GlyphInfo& glyph = *( glyphsBuffer + i );
+
+      // Get the background color of the character.
+      // The color index zero is reserved for the default background color (i.e. Color::TRANSPARENT)
+      const ColorIndex backgroundColorIndex = ( nullptr == backgroundColorsBuffer ) ? 0u : *( backgroundColorIndicesBuffer + i );
+      const Vector4& backgroundColor = ( 0u == backgroundColorIndex ) ? Color::TRANSPARENT : *( backgroundColorsBuffer + backgroundColorIndex - 1u );
+
+      // Only create quads for glyphs with a background color
+      if ( backgroundColor != Color::TRANSPARENT )
+      {
+        const Vector2 position = *( positionsBuffer + i );
+
+        if ( i == 0u && glyphSize == 1u ) // Only one glyph in the whole text
+        {
+          quad.x = position.x;
+          quad.y = 0.0f;
+          quad.z = quad.x + std::max( glyph.advance, glyph.xBearing + glyph.width );
+          quad.w = textSize.height;
+        }
+        else if ( i == 0u ) // The first glyph in the whole text
+        {
+          quad.x = position.x;
+          quad.y = 0.0f;
+          quad.z = quad.x - glyph.xBearing + glyph.advance;
+          quad.w = textSize.height;
+        }
+        else if ( i == glyphSize - 1u ) // The last glyph in the whole text
+        {
+          quad.x = position.x - glyph.xBearing;
+          quad.y = 0.0f;
+          quad.z = quad.x + std::max( glyph.advance, glyph.xBearing + glyph.width );
+          quad.w = textSize.height;
+        }
+        else // The glyph in the middle of the text
+        {
+          quad.x = position.x - glyph.xBearing;
+          quad.y = 0.0f;
+          quad.z = quad.x + glyph.advance;
+          quad.w = textSize.height;
+        }
+
+        BackgroundVertex vertex;
+
+        // Top left
+        vertex.mPosition.x = quad.x - offsetX;
+        vertex.mPosition.y = quad.y - offsetY;
+        vertex.mColor = backgroundColor;
+        mesh.mVertices.PushBack( vertex );
+
+        // Top right
+        vertex.mPosition.x = quad.z - offsetX;
+        vertex.mPosition.y = quad.y - offsetY;
+        vertex.mColor = backgroundColor;
+        mesh.mVertices.PushBack( vertex );
+
+        // Bottom left
+        vertex.mPosition.x = quad.x - offsetX;
+        vertex.mPosition.y = quad.w - offsetY;
+        vertex.mColor = backgroundColor;
+        mesh.mVertices.PushBack( vertex );
+
+        // Bottom right
+        vertex.mPosition.x = quad.z - offsetX;
+        vertex.mPosition.y = quad.w - offsetY;
+        vertex.mColor = backgroundColor;
+        mesh.mVertices.PushBack( vertex );
+
+        // Six indices in counter clockwise winding
+        mesh.mIndices.PushBack( 1u + 4 * numberOfQuads );
+        mesh.mIndices.PushBack( 0u + 4 * numberOfQuads );
+        mesh.mIndices.PushBack( 2u + 4 * numberOfQuads );
+        mesh.mIndices.PushBack( 2u + 4 * numberOfQuads );
+        mesh.mIndices.PushBack( 3u + 4 * numberOfQuads );
+        mesh.mIndices.PushBack( 1u + 4 * numberOfQuads );
+
+        numberOfQuads++;
+      }
+    }
+
+    // Only create the background actor if there are glyphs with background color
+    if ( mesh.mVertices.Count() > 0u )
+    {
+      Property::Map quadVertexFormat;
+      quadVertexFormat[ "aPosition" ] = Property::VECTOR2;
+      quadVertexFormat[ "aColor" ] = Property::VECTOR4;
+
+      PropertyBuffer quadVertices = PropertyBuffer::New( quadVertexFormat );
+      quadVertices.SetData( &mesh.mVertices[ 0 ], mesh.mVertices.Size() );
+
+      Geometry quadGeometry = Geometry::New();
+      quadGeometry.AddVertexBuffer( quadVertices );
+      quadGeometry.SetIndexBuffer( &mesh.mIndices[ 0 ], mesh.mIndices.Size() );
+
+      if( !mShaderBackground )
+      {
+        mShaderBackground = Shader::New( VERTEX_SHADER_BACKGROUND, FRAGMENT_SHADER_BACKGROUND );
+      }
+
+      Dali::Renderer renderer = Dali::Renderer::New( quadGeometry, mShaderBackground );
+      renderer.SetProperty( Dali::Renderer::Property::BLEND_MODE, BlendMode::ON );
+      renderer.SetProperty( Dali::Renderer::Property::DEPTH_INDEX, DepthIndex::CONTENT );
+
+      actor = Actor::New();
+      actor.SetName( "TextBackgroundColorActor" );
+      actor.SetParentOrigin( ParentOrigin::TOP_LEFT );
+      actor.SetAnchorPoint( AnchorPoint::TOP_LEFT );
+      actor.SetSize( textSize );
+      actor.SetColorMode( USE_OWN_MULTIPLY_PARENT_COLOR );
+      actor.AddRenderer( renderer );
+    }
+  }
+
+  return actor;
 }
 
 } // namespace Text

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Samsung Electronics Co., Ltd.
+ * Copyright (c) 2019 Samsung Electronics Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@
 #include <dali/devel-api/object/property-helper-devel.h>
 #include <dali/devel-api/actors/actor-devel.h>
 #include <dali/public-api/object/type-registry-helper.h>
-#include <dali/integration-api/adaptors/adaptor.h>
 #include <dali/integration-api/debug.h>
 
 // INTERNAL INCLUDES
@@ -45,6 +44,7 @@
 #include <dali-toolkit/internal/text/text-view.h>
 #include <dali-toolkit/internal/styling/style-manager-impl.h>
 #include <dali-toolkit/devel-api/controls/control-devel.h>
+#include <dali/integration-api/adaptor-framework/adaptor.h>
 
 using namespace Dali::Toolkit::Text;
 
@@ -1463,8 +1463,14 @@ void TextField::RenderText( Text::Controller::UpdateTextType updateTextType )
 
     if( renderableActor != mRenderableActor )
     {
+      UnparentAndReset( mBackgroundActor );
       UnparentAndReset( mRenderableActor );
       mRenderableActor = renderableActor;
+
+      if ( mRenderableActor )
+      {
+        mBackgroundActor = mController->CreateBackgroundActor();
+      }
     }
   }
 
@@ -1472,9 +1478,12 @@ void TextField::RenderText( Text::Controller::UpdateTextType updateTextType )
   {
     const Vector2& scrollOffset = mController->GetTextModel()->GetScrollPosition();
 
+    float renderableActorPositionX, renderableActorPositionY;
+
     if( mStencil )
     {
-      mRenderableActor.SetPosition( scrollOffset.x + mAlignmentOffset, scrollOffset.y );
+      renderableActorPositionX = scrollOffset.x + mAlignmentOffset;
+      renderableActorPositionY = scrollOffset.y;
     }
     else
     {
@@ -1488,12 +1497,16 @@ void TextField::RenderText( Text::Controller::UpdateTextType updateTextType )
         std::swap( padding.start, padding.end );
       }
 
-      mRenderableActor.SetPosition( scrollOffset.x + mAlignmentOffset + padding.start, scrollOffset.y + padding.top );
+      renderableActorPositionX = scrollOffset.x + mAlignmentOffset + padding.start;
+      renderableActorPositionY = scrollOffset.y + padding.top;
     }
 
+    mRenderableActor.SetPosition( renderableActorPositionX, renderableActorPositionY );
 
     // Make sure the actors are parented correctly with/without clipping
     Actor self = mStencil ? mStencil : Self();
+
+    Actor highlightActor;
 
     for( std::vector<Actor>::iterator it = mClippingDecorationActors.begin(),
            endIt = mClippingDecorationActors.end();
@@ -1502,10 +1515,31 @@ void TextField::RenderText( Text::Controller::UpdateTextType updateTextType )
     {
       self.Add( *it );
       it->LowerToBottom();
+
+      if ( it->GetName() == "HighlightActor" )
+      {
+        highlightActor = *it;
+      }
     }
     mClippingDecorationActors.clear();
 
     self.Add( mRenderableActor );
+
+    if ( mBackgroundActor )
+    {
+      if ( mDecorator && mDecorator->IsHighlightVisible() )
+      {
+        self.Add( mBackgroundActor );
+        mBackgroundActor.SetPosition( renderableActorPositionX, renderableActorPositionY); // In text field's coords.
+        mBackgroundActor.LowerBelow( highlightActor );
+      }
+      else
+      {
+        mRenderableActor.Add( mBackgroundActor );
+        mBackgroundActor.SetPosition( 0.0f, 0.0f ); // In renderable actor's coords.
+        mBackgroundActor.LowerToBottom();
+      }
+    }
   }
 }
 

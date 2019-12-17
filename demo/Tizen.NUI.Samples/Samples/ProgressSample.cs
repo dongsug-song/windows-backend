@@ -34,8 +34,8 @@ namespace Tizen.NUI.Samples
             progressBar1_1.MaxValue = 100;
             progressBar1_1.MinValue = 0;
             progressBar1_1.CurrentValue = 45;
-            progressBar1_1.TrackColor = Color.Green;
-            progressBar1_1.ProgressColor = Color.Black;
+            progressBar1_1.Style.Track.BackgroundColor = Color.Green;
+            progressBar1_1.Style.Progress.BackgroundColor = Color.Black;
             root.Add(progressBar1_1);
 
             progressBar1_2 = new Progress();
@@ -44,23 +44,23 @@ namespace Tizen.NUI.Samples
             progressBar1_2.MaxValue = 100;
             progressBar1_2.MinValue = 0;
             progressBar1_2.CurrentValue = 15;
-            progressBar1_2.TrackColor = Color.Green;
-            progressBar1_2.ProgressColor = Color.Black;
+            progressBar1_2.Style.Track.BackgroundColor = Color.Green;
+            progressBar1_2.Style.Progress.BackgroundColor = Color.Black;
 
             root.Add(progressBar1_2);
 
-            ProgressAttributes attr = new ProgressAttributes
+            ProgressStyle attr = new ProgressStyle
             {
-                TrackImageAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    BackgroundColor = new ColorSelector
+                    BackgroundColor = new Selector<Color>
                     {
                         All = Color.Cyan,
                     }
                 },
-                ProgressImageAttributes = new ImageAttributes
+                Progress = new ImageViewStyle
                 {
-                    BackgroundColor = new ColorSelector
+                    BackgroundColor = new Selector<Color>
                     {
                         All = Color.Black,
                     }
@@ -137,7 +137,7 @@ namespace Tizen.NUI.Samples
             button1.BackgroundColor = Color.Green;
             button1.Position2D = new Position2D(100, 700);
             button1.Size2D = new Size2D(80, 50);
-            button1.Text = "+";
+            button1.Style.Text.Text = "+";
             root.Add(button1);
             button1.Focusable = true;
             button1.ClickEvent += bar1Add;
@@ -146,7 +146,7 @@ namespace Tizen.NUI.Samples
             button2.BackgroundColor = Color.Green;
             button2.Position2D = new Position2D(200, 700);
             button2.Size2D = new Size2D(80, 50);
-            button2.Text = "-";
+            button2.Style.Text.Text = "-";
             root.Add(button2);
             button2.Focusable = true;
             button2.ClickEvent += bar1Minus;
@@ -200,17 +200,17 @@ namespace Tizen.NUI.Samples
                 status = 0;
             if (status == 0)
             {
-                button5.Text = "Buffer";
+                button5.Style.Text.Text = "Buffer";
                 //progressCircle1.ProgressState = Progress.ProgressStatusType.Buffering;
             }
             if (status == 1)
             {
-                button5.Text = "Deter";
+                button5.Style.Text.Text = "Deter";
                 //progressCircle1.ProgressState = Progress.ProgressStatusType.Determinate;
             }
             if (status == 2)
             {
-                button5.Text = "indeter";
+                button5.Style.Text.Text = "indeter";
                 //progressCircle1.ProgressState = Progress.ProgressStatusType.Indeterminate;
             }
         }

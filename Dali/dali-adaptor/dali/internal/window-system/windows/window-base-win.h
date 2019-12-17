@@ -187,14 +187,14 @@ public:
   virtual void Activate() override;
 
   /**
-   * @copydoc Dali::Internal::Adaptor::WindowBase::SetAvailableOrientations()
+   * @copydoc Dali::Internal::Adaptor::WindowBase::SetAvailableAnlges()
    */
-  virtual void SetAvailableOrientations( const std::vector< Dali::Window::WindowOrientation >& orientations ) override;
+  virtual void SetAvailableAnlges( const std::vector< int >& angles ) override;
 
   /**
-   * @copydoc Dali::Internal::Adaptor::WindowBase::SetPreferredOrientation()
+   * @copydoc Dali::Internal::Adaptor::WindowBase::SetPreferredAngle()
    */
-  virtual void SetPreferredOrientation( Dali::Window::WindowOrientation orientation ) override;
+  virtual void SetPreferredAngle( int angle ) override;
 
   /**
    * @copydoc Dali::Internal::Adaptor::WindowBase::SetAcceptFocus()
@@ -339,12 +339,7 @@ public:
   /**
    * @copydoc Dali::Internal::Adaptor::WindowBase::SetParent()
    */
-  virtual void SetParent( Any parent ) override;
-
-  /**
-   * @copydoc Dali::Internal::Adaptor::WindowBase::IsMatchedWindow()
-   */
-  virtual bool IsMatchedWindow( Any window ) override;
+  virtual void SetParent( WindowBase* parentWinBase ) override;
 
 private:
 

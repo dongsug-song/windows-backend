@@ -145,6 +145,7 @@ namespace Tizen.NUI.Components
             }
         }
 
+        private new Extents padding;
         /// <summary>
         /// overwrite the Padding.
         /// </summary>
@@ -153,8 +154,36 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         public new Extents Padding
         {
-            get;
-            set;
+            get
+            {
+                if (null == padding)
+                {
+                    padding = new Extents((ushort start, ushort end, ushort top, ushort bottom) =>
+                    {
+                        padding.Start = start;
+                        padding.End = end;
+                        padding.Top = top;
+                        padding.Bottom = bottom;
+                    }, 0, 0, 0, 0);
+                }
+
+                return padding;
+            }
+            set
+            {
+                if (null == padding)
+                {
+                    padding = new Extents((ushort start, ushort end, ushort top, ushort bottom) =>
+                    {
+                        padding.Start = start;
+                        padding.End = end;
+                        padding.Top = top;
+                        padding.Bottom = bottom;
+                    }, 0, 0, 0, 0);
+                }
+
+                padding.CopyFrom(value);
+            }
         }
 
         /// <summary>
@@ -442,7 +471,7 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        protected override Attributes GetAttributes()
+        protected override ViewStyle GetAttributes()
         {
             return null;
         }
@@ -597,7 +626,7 @@ namespace Tizen.NUI.Components
 
             float extent = mLayout.ComputeScrollExtent();
             float range = mLayout.ComputeScrollRange();
-            if(range == 0)
+            if (range == 0)
             {
                 return;
             }
@@ -624,11 +653,11 @@ namespace Tizen.NUI.Components
             }
             if (mScrollBar.Direction == ScrollBar.DirectionType.Vertical)
             {
-                mScrollBar.ThumbSize = new Size(thickness, length);
+                mScrollBar.Style.Thumb.Size = new Size(thickness, length);
             }
             else
             {
-                mScrollBar.ThumbSize = new Size(length, thickness);
+                mScrollBar.Style.Thumb.Size = new Size(length, thickness);
             }
             mScrollBar.MinValue = 0;
             mScrollBar.MaxValue = (int)(range - extent);
@@ -661,7 +690,7 @@ namespace Tizen.NUI.Components
             mAdapter.OnFocusChange(this, mFocusedItemIndex, nextFocusPosition);
 
             mFocusedItemIndex = nextFocusPosition;
- 
+
             ShowScrollBar();
         }
 
@@ -1069,7 +1098,7 @@ namespace Tizen.NUI.Components
             [EditorBrowsable(EditorBrowsableState.Never)]
             public void NotifyItemMoved(int fromPosition, int toPosition)
             {
-               
+
             }
 
             private void OnItemEvent(object sender, ItemEventArgs e)

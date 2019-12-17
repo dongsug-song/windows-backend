@@ -57,6 +57,11 @@ public:
   void Initialize( const std::string& url );
 
   /**
+   * @copydoc Dali::VectorAnimationRenderer::Finalize()
+   */
+  void Finalize();
+
+  /**
    * @copydoc Dali::VectorAnimationRenderer::SetRenderer()
    */
   void SetRenderer( Dali::Renderer renderer );
@@ -85,6 +90,11 @@ public:
    * @copydoc Dali::VectorAnimationRenderer::GetDefaultSize()
    */
   void GetDefaultSize( uint32_t& width, uint32_t& height ) const;
+
+  /**
+   * @copydoc Dali::VectorAnimationRenderer::GetLayerInfo()
+   */
+  void GetLayerInfo( Property::Map& map ) const;
 
   /**
    * @copydoc Dali::VectorAnimationRenderer::UploadCompletedSignal()

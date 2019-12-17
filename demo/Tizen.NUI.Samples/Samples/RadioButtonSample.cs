@@ -44,6 +44,7 @@ namespace Tizen.NUI.Samples
             ///////////////////////////////////////////////Create by Property//////////////////////////////////////////////////////////
             createText[0] = new TextLabel();
             createText[0].Text = "Create RadioButton just by properties";
+            createText[0].TextColor = Color.White;
             createText[0].Size2D = new Size2D(500, 100);
             createText[0].Position2D = new Position2D(400, 100);
             root.Add(createText[0]);
@@ -64,17 +65,17 @@ namespace Tizen.NUI.Samples
                 utilityRadioButton[i] = new RadioButton();
                 utilityRadioButton[i].Size2D = new Size2D(48, 48);
                 utilityRadioButton[i].Position2D = new Position2D(300, 300 + i * 100);
-                utilityRadioButton[i].CheckImageSize = new Size(48, 48);
-                utilityRadioButton[i].CheckImagePaddingLeft = 5;
-                utilityRadioButton[i].CheckImagePaddingRight = 5;
-                utilityRadioButton[i].CheckImageOpacitySelector = new FloatSelector
+                utilityRadioButton[i].Style.SelectableImage.Size = new Size(48, 48);
+                utilityRadioButton[i].Style.SelectableImage.Image.Padding.Start = 5;
+                utilityRadioButton[i].Style.SelectableImage.Image.Padding.End = 5;
+                utilityRadioButton[i].Style.SelectableImage.Opacity = new Selector<float?>
                 {
                     Normal = 1.0f,
                     Selected = 1.0f,
                     Disabled = 0.4f,
                     DisabledSelected = 0.4f
                 };
-                utilityRadioButton[i].CheckImageURLSelector = new StringSelector
+                utilityRadioButton[i].Style.SelectableImage.Image.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_on.png",
@@ -87,17 +88,17 @@ namespace Tizen.NUI.Samples
                 familyRadioButton[i] = new RadioButton();
                 familyRadioButton[i].Size2D = new Size2D(48, 48);
                 familyRadioButton[i].Position2D = new Position2D(500, 300 + i * 100);
-                familyRadioButton[i].CheckImageSize = new Size(48, 48);
-                familyRadioButton[i].CheckImagePaddingLeft = 5;
-                familyRadioButton[i].CheckImagePaddingRight = 5;
-                familyRadioButton[i].CheckImageOpacitySelector = new FloatSelector
+                familyRadioButton[i].Style.SelectableImage.Size = new Size(48, 48);
+                familyRadioButton[i].Style.SelectableImage.Image.Padding.Start = 5;
+                familyRadioButton[i].Style.SelectableImage.Image.Padding.End = 5;
+                familyRadioButton[i].Style.SelectableImage.Opacity = new Selector<float?>
                 {
                     Normal = 1.0f,
                     Selected = 1.0f,
                     Disabled = 0.4f,
                     DisabledSelected = 0.4f
                 };
-                familyRadioButton[i].CheckImageURLSelector = new StringSelector
+                familyRadioButton[i].Style.SelectableImage.Image.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_24c447.png",
@@ -110,17 +111,17 @@ namespace Tizen.NUI.Samples
                 foodRadioButton[i] = new RadioButton();
                 foodRadioButton[i].Size2D = new Size2D(150, 48);
                 foodRadioButton[i].Position2D = new Position2D(700, 300 + i * 100);
-                foodRadioButton[i].CheckImageSize = new Size(48, 48);
-                foodRadioButton[i].CheckImagePaddingLeft = 5;
-                foodRadioButton[i].CheckImagePaddingRight = 5;
-                foodRadioButton[i].CheckImageOpacitySelector = new FloatSelector
+                foodRadioButton[i].Style.SelectableImage.Size = new Size(48, 48);
+                foodRadioButton[i].Style.SelectableImage.Image.Padding.Start = 5;
+                foodRadioButton[i].Style.SelectableImage.Image.Padding.End = 5;
+                foodRadioButton[i].Style.SelectableImage.Opacity = new Selector<float?>
                 {
                     Normal = 1.0f,
                     Selected = 1.0f,
                     Disabled = 0.4f,
                     DisabledSelected = 0.4f
                 };
-                foodRadioButton[i].CheckImageURLSelector = new StringSelector
+                foodRadioButton[i].Style.SelectableImage.Image.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_ec7510.png",
@@ -138,17 +139,17 @@ namespace Tizen.NUI.Samples
                 kitchenRadioButton[i] = new RadioButton();
                 kitchenRadioButton[i].Size2D = new Size2D(48, 48);
                 kitchenRadioButton[i].Position2D = new Position2D(900, 300 + i * 100);
-                kitchenRadioButton[i].CheckImageSize = new Size(48, 48);
-                kitchenRadioButton[i].CheckImagePaddingLeft = 5;
-                kitchenRadioButton[i].CheckImagePaddingRight = 5;
-                kitchenRadioButton[i].CheckImageOpacitySelector = new FloatSelector
+                kitchenRadioButton[i].Style.SelectableImage.Size = new Size(48, 48);
+                kitchenRadioButton[i].Style.SelectableImage.Image.Padding.Start = 5;
+                kitchenRadioButton[i].Style.SelectableImage.Image.Padding.End = 5;
+                kitchenRadioButton[i].Style.SelectableImage.Opacity = new Selector<float?>
                 {
                     Normal = 1.0f,
                     Selected = 1.0f,
                     Disabled = 0.4f,
                     DisabledSelected = 0.4f
                 };
-                kitchenRadioButton[i].CheckImageURLSelector = new StringSelector
+                kitchenRadioButton[i].Style.SelectableImage.Image.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_9762d9.png",
@@ -167,6 +168,7 @@ namespace Tizen.NUI.Samples
             ///////////////////////////////////////////////Create by Attributes//////////////////////////////////////////////////////////
             createText[1] = new TextLabel();
             createText[1].Text = "Create RadioButton just by Attributes";
+            createText[1].TextColor = Color.White;
             createText[1].Size2D = new Size2D(500, 100);
             createText[1].Position2D = new Position2D(1200, 100);
             root.Add(createText[1]);
@@ -181,88 +183,100 @@ namespace Tizen.NUI.Samples
                 root.Add(modeText2[i]);
             }
 
-            SelectButtonAttributes utilityAttrs = new SelectButtonAttributes
+            SelectButtonStyle utilityAttrs = new SelectButtonStyle
             {
-                CheckImageAttributes = new ImageAttributes
+                SelectableImage = new ImageControlStyle
                 {
                     Size =  new Size(48, 48),
-                    ResourceURL = new StringSelector
-                    {
-                        Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_on.png",
-                        Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_on.png",
-                    },
-                    Opacity = new FloatSelector
+                    Opacity = new Selector<float?>
                     {
                         Normal = 1.0f,
                         Selected = 1.0f,
                         Disabled = 0.4f,
                         DisabledSelected = 0.4f
                     },
+                    Image = new ImageViewStyle
+                    {
+                        ResourceUrl = new Selector<string>
+                        {
+                            Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_on.png",
+                            Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_on.png",
+                        },
+                    }
                 },            
             };         
-            SelectButtonAttributes familyAttrs = new SelectButtonAttributes
+            SelectButtonStyle familyAttrs = new SelectButtonStyle
             {
-                CheckImageAttributes = new ImageAttributes
+                SelectableImage = new ImageControlStyle
                 {
                     Size =  new Size(48, 48),
-                    ResourceURL = new StringSelector
-                    {
-                        Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_24c447.png",
-                        Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_24c447.png",
-                    },
-                    Opacity = new FloatSelector
+                    Opacity = new Selector<float?>
                     {
                         Normal = 1.0f,
                         Selected = 1.0f,
                         Disabled = 0.4f,
                         DisabledSelected = 0.4f
                     },
+                    Image = new ImageViewStyle
+                    {
+                        ResourceUrl = new Selector<string>
+                        {
+                            Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_24c447.png",
+                            Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_24c447.png",
+                        },
+                    }
                 },
             };
-            SelectButtonAttributes foodAttrs = new SelectButtonAttributes
+            SelectButtonStyle foodAttrs = new SelectButtonStyle
             {
-                CheckImageAttributes = new ImageAttributes
+                SelectableImage = new ImageControlStyle
                 {
                     Size = new Size(48, 48),
-                    ResourceURL = new StringSelector
-                    {
-                        Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_ec7510.png",
-                        Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_ec7510.png",
-                    },
-                    Opacity = new FloatSelector
+                    Opacity = new Selector<float?>
                     {
                         Normal = 1.0f,
                         Selected = 1.0f,
                         Disabled = 0.4f,
                         DisabledSelected = 0.4f
                     },
+                    Image = new ImageViewStyle
+                    {
+                        ResourceUrl = new Selector<string>
+                        {
+                            Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_ec7510.png",
+                            Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_ec7510.png",
+                        },
+                    }
                 },
             };
-            SelectButtonAttributes kitchenAttrs = new SelectButtonAttributes
+            SelectButtonStyle kitchenAttrs = new SelectButtonStyle
             {
-                CheckImageAttributes = new ImageAttributes
+                SelectableImage = new ImageControlStyle
                 {
                     Size = new Size(48, 48),
-                    ResourceURL = new StringSelector
-                    {
-                        Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_9762d9.png",
-                        Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
-                        DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_9762d9.png",
-                    },
-                    Opacity = new FloatSelector
+                    Opacity = new Selector<float?>
                     {
                         Normal = 1.0f,
                         Selected = 1.0f,
                         Disabled = 0.4f,
                         DisabledSelected = 0.4f
                     },
+                    Image = new ImageViewStyle
+                    {
+                        ResourceUrl = new Selector<string>
+                        {
+                            Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_9762d9.png",
+                            Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_radio_off.png",
+                            DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_btn_radio_on_9762d9.png",
+                        },
+                    }
                 },               
             };
             for (int i = 0; i < num; i++)

@@ -85,6 +85,11 @@ public:
   VectorAnimationRenderer& operator=( const VectorAnimationRenderer& rhs );
 
   /**
+   * @brief Finalizes the renderer.
+   */
+  void Finalize();
+
+  /**
    * @brief Sets the renderer used to display the result image.
    *
    * @param[in] renderer The renderer used to display the result image
@@ -122,11 +127,19 @@ public:
   float GetFrameRate() const;
 
   /**
-   * @brief Gets the default size of the file,.
+   * @brief Gets the default size of the file.
    *
-   * @return The default size of the file
+   * @param[out] width The default width of the file
+   * @param[out] height The default height of the file
    */
   void GetDefaultSize( uint32_t& width, uint32_t& height ) const;
+
+  /**
+   * @brief Gets the layer information of all the child layers.
+   *
+   * @param[out] map The layer information
+   */
+  void GetLayerInfo( Property::Map& map ) const;
 
 public: // Signals
 

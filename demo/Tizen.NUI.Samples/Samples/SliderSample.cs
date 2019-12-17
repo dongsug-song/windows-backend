@@ -28,6 +28,7 @@ namespace Tizen.NUI.Samples
             ///////////////////////////////////////////////Create by Property//////////////////////////////////////////////////////////
             createText[0] = new TextLabel();
             createText[0].Text = "Create Slider just by properties";
+            createText[0].TextColor = Color.White;
             createText[0].Size2D = new Size2D(450, 100);
             createText[0].Position2D = new Position2D(200, 100);
             createText[0].MultiLine = true;
@@ -37,53 +38,53 @@ namespace Tizen.NUI.Samples
             slider[1] = CreateByProperty(300, 450, 50, 400, 20, Slider.DirectionType.Vertical);
 
             slider[2] = CreateByProperty(40, 400, 800, 50, 30, Slider.DirectionType.Horizontal);
-            slider[2].LowIndicatorTextContent = "SubText";
+            slider[2].Style.LowIndicator.Text = "SubText";
             slider[2].LowIndicatorSize = new Size(100, 40);
 
             slider[3] = CreateByProperty(600, 450, 50, 400, 30, Slider.DirectionType.Vertical);
-            slider[3].LowIndicatorTextContent = "SubText";
+            slider[3].Style.LowIndicator.Text = "SubText";
             slider[3].LowIndicatorSize = new Size(100, 40);
 
             /////////////////////////////////////////////Create by Attributes//////////////////////////////////////////////////////////
             createText[1] = new TextLabel();
+            createText[1].TextColor = Color.White;
             createText[1].Text = "Create Slider just by Attributes";
             createText[1].Size2D = new Size2D(450, 100);
             createText[1].Position2D = new Position2D(1000, 100);
             createText[1].MultiLine = true;
             root.Add(createText[1]);
 
-            SliderAttributes attributes = new SliderAttributes
+            SliderStyle attributes = new SliderStyle
             {
                 TrackThickness = 4,
-                BackgroundTrackAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    BackgroundColor = new ColorSelector
+                    BackgroundColor = new Selector<Color>
                     {
                         All = new Color(0, 0, 0, 0.1f),
                     }
                 },
 
-                SlidedTrackAttributes = new ImageAttributes
+                Progress = new ImageViewStyle
                 {
-                    BackgroundColor = new ColorSelector
+                    BackgroundColor = new Selector<Color>
                     {
                         All = new Color(0.05f, 0.63f, 0.9f, 1),
                     }
                 },
 
-                ThumbAttributes = new ImageAttributes
+                Thumb = new ImageViewStyle
                 {
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_slide_handler_normal.png",
                         Pressed = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_slide_handler_press.png",
-                    }
+                    },
                 },
-
-                ThumbBackgroundAttributes = new ImageAttributes
+                ThumbBackground = new ImageViewStyle
                 {
                     Size = new Size(60, 60),
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = "",
                         Pressed = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_slide_handler_effect.png",
@@ -95,11 +96,11 @@ namespace Tizen.NUI.Samples
             slider2[1] = CreateByAttributes(attributes, 1150, 450, 50, 400, 20, Slider.DirectionType.Vertical);
 
             slider2[2] = CreateByAttributes(attributes, 890, 400, 800, 50, 30, Slider.DirectionType.Horizontal);
-            slider2[2].LowIndicatorTextContent = "SubText";
+            slider2[2].Style.LowIndicator.Text = "SubText";
             slider2[2].LowIndicatorSize = new Size(100, 40);
 
             slider2[3] = CreateByAttributes(attributes, 1450, 450, 50, 400, 30, Slider.DirectionType.Vertical);
-            slider2[3].LowIndicatorTextContent = "SubText";
+            slider2[3].Style.LowIndicator.Text = "SubText";
             slider2[3].LowIndicatorSize = new Size(100, 40);
         }
 
@@ -167,15 +168,15 @@ namespace Tizen.NUI.Samples
         {           
             Slider source = new Slider();
             source.TrackThickness = 4;
-            source.BgTrackColor = new Color(0, 0, 0, 0.1f);
-            source.SlidedTrackColor = new Color(0.05f, 0.63f, 0.9f, 1);
-            source.ThumbImageURLSelector = new StringSelector
+            source.Style.Track.BackgroundColor = new Color(0, 0, 0, 0.1f);
+            source.Style.Progress.BackgroundColor = new Color(0.05f, 0.63f, 0.9f, 1);
+            source.Style.Thumb.ResourceUrl = new Selector<string>
             {
                 Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_slide_handler_normal.png",
                 Pressed = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_slide_handler_press.png",
             };
-            source.ThumbSize = new Size(60, 60);
-            source.ThumbImageBackgroundURLSelector = new StringSelector
+            source.Style.Thumb.Size = new Size(60, 60);
+            source.Style.ThumbBackground.ResourceUrl = new Selector<string>
             {
                 Normal = "",
                 Pressed = CommonResource.GetFHResourcePath() + "9. Controller/controller_btn_slide_handler_effect.png",
@@ -195,7 +196,7 @@ namespace Tizen.NUI.Samples
             return source;
         }
 
-        private Slider CreateByAttributes(SliderAttributes attrs, int posX, int posY, int w, int h, int curValue, Slider.DirectionType dir)
+        private Slider CreateByAttributes(SliderStyle attrs, int posX, int posY, int w, int h, int curValue, Slider.DirectionType dir)
         {
             Slider source = new Slider(attrs);
             source.Direction = dir;

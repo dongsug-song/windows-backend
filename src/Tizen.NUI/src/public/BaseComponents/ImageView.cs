@@ -241,6 +241,22 @@ namespace Tizen.NUI.BaseComponents
         private string _resourceUrl = "";
         private bool _synchronosLoading = false;
 
+        private ImageViewStyle imageViewStyle;
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ImageViewStyle ImageViewStyle
+        {
+            get
+            {
+                if (null == imageViewStyle)
+                {
+                    imageViewStyle = ViewStyle as ImageViewStyle;
+                }
+
+                return imageViewStyle;
+            }
+        }
+
         /// <summary>
         /// Creates an initialized ImageView.
         /// </summary>
@@ -248,6 +264,13 @@ namespace Tizen.NUI.BaseComponents
         public ImageView() : this(Interop.ImageView.ImageView_New__SWIG_0(), true)
         {
             if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+        }
+
+        /// This will be public opened in next release of tizen after ACR done. Before ACR, it is used as HiddenAPI (InhouseAPI).
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ImageView(ViewStyle viewStyle) : this(Interop.ImageView.ImageView_New__SWIG_0(), true)
+        {
+            int temp = 0;
         }
 
         /// <summary>
@@ -491,12 +514,16 @@ namespace Tizen.NUI.BaseComponents
         /// ImageView PixelArea, type Vector4 (Animatable property).<br />
         /// Pixel area is a relative value with the whole image area as [0.0, 0.0, 1.0, 1.0].<br />
         /// </summary>
+        /// <remarks>
+        /// The property cascade chaining set is possible. For example, this (imageView.PixelArea.X = 0.1f;) is possible.
+        /// </remarks>
         /// <since_tizen> 3 </since_tizen>
         public RelativeVector4 PixelArea
         {
             get
             {
-                return (RelativeVector4)GetValue(PixelAreaProperty);
+                RelativeVector4 temp = (RelativeVector4)GetValue(PixelAreaProperty);
+                return new RelativeVector4(OnPixelAreaChanged, temp.X, temp.Y, temp.Z, temp.W);
             }
             set
             {
@@ -511,12 +538,23 @@ namespace Tizen.NUI.BaseComponents
         /// For N-Patch images only.<br />
         /// Optional.
         /// </summary>
+        /// <remarks>
+        /// The property cascade chaining set is possible. For example, this (imageView.Border.X = 1;) is possible.
+        /// </remarks>
         /// <since_tizen> 3 </since_tizen>
         public Rectangle Border
         {
             get
             {
-                return (Rectangle)GetValue(BorderProperty);
+                Rectangle temp = (Rectangle)GetValue(BorderProperty);
+                if (null == temp)
+                {
+                    return null;
+                }
+                else
+                {
+                    return new Rectangle(OnBorderChanged, temp.X, temp.Y, temp.Width, temp.Height);
+                }
             }
             set
             {
@@ -861,6 +899,17 @@ namespace Tizen.NUI.BaseComponents
             }
         }
 
+        /// <summary>
+        /// Get attribues, it is abstract function and must be override.
+        /// </summary>
+        /// <since_tizen> 6 </since_tizen>
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected override ViewStyle GetAttributes()
+        {
+            imageViewStyle = new ImageViewStyle();
+            return imageViewStyle;
+        }
 
         internal static global::System.Runtime.InteropServices.HandleRef getCPtr(ImageView obj)
         {
@@ -891,6 +940,52 @@ namespace Tizen.NUI.BaseComponents
         internal ResourceLoadingStatusType GetResourceStatus()
         {
             return (ResourceLoadingStatusType)Interop.View.View_GetVisualResourceStatus(this.swigCPtr, Property.IMAGE);
+        }
+
+        internal static readonly BindableProperty ResourceUrlSelectorProperty = BindableProperty.Create("ResourceUrlSelector", typeof(Selector<string>), typeof(ImageView), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var imageView = (ImageView)bindable;
+            imageView.resourceUrlSelector.Clone((Selector<string>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var imageView = (ImageView)bindable;
+            return imageView.resourceUrlSelector;
+        });
+        private TriggerableSelector<string> _resourceUrlSelector;
+        private TriggerableSelector<string> resourceUrlSelector
+        {
+            get
+            {
+                if (null == _resourceUrlSelector)
+                {
+                    _resourceUrlSelector = new TriggerableSelector<string>(this, ResourceUrlProperty);
+                }
+                return _resourceUrlSelector;
+            }
+        }
+
+        internal static readonly BindableProperty BorderSelectorProperty = BindableProperty.Create("BorderSelector", typeof(Selector<Rectangle>), typeof(ImageView), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var imageView = (ImageView)bindable;
+            imageView.borderSelector.Clone((Selector<Rectangle>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var imageView = (ImageView)bindable;
+            return imageView.borderSelector;
+        });
+        private TriggerableSelector<Rectangle> _borderSelector;
+        private TriggerableSelector<Rectangle> borderSelector
+        {
+            get
+            {
+                if (null == _borderSelector)
+                {
+                    _borderSelector = new TriggerableSelector<Rectangle>(this, BorderProperty);
+                }
+                return _borderSelector;
+            }
         }
 
         /// <summary>
@@ -1069,6 +1164,15 @@ namespace Tizen.NUI.BaseComponents
             /// For nine-patch image
             /// </summary>
             Npatch = 2,
+        }
+
+        private void OnBorderChanged(int x, int y, int width, int height)
+        {
+            Border = new Rectangle(x, y, width, height);
+        }
+        private void OnPixelAreaChanged(float x, float y, float z, float w)
+        {
+            PixelArea = new RelativeVector4(x, y, z, w);
         }
     }
 }

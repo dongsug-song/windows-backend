@@ -323,8 +323,8 @@
     <ClCompile Include="..\..\..\dali-adaptor\dali\devel-api\text-abstraction\shaping.cpp" />
     <ClCompile Include="..\..\..\dali-adaptor\dali\devel-api\text-abstraction\text-renderer-layout-helper.cpp" />
     <ClCompile Include="..\..\..\dali-adaptor\dali\devel-api\text-abstraction\text-renderer.cpp" />
-    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\scene-holder-impl.cpp" />
-    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\scene-holder.cpp" />
+    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\adaptor-framework\scene-holder-impl.cpp" />
+    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\adaptor-framework\scene-holder.cpp" />
     <ClCompile Include="..\..\..\dali-adaptor\dali\internal\accessibility\common\tts-player-factory.cpp" />
     <ClCompile Include="..\..\..\dali-adaptor\dali\internal\accessibility\common\tts-player-impl.cpp" />
     <ClCompile Include="..\..\..\dali-adaptor\dali\internal\accessibility\common\accessibility-adaptor-impl.cpp" />

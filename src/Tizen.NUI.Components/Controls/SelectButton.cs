@@ -38,11 +38,12 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected SelectGroup itemGroup = null;
 
-        private ImageView checkShadowImage;
-        private ImageView checkBackgroundImage;
-        private ImageView checkImage;
+        private ImageControl selectableImage;
+        private SelectButtonStyle selectButtonStyle;
 
-        private SelectButtonAttributes selectButtonAttributes;
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new SelectButtonStyle Style => selectButtonStyle;
 
         /// <summary>
         /// Creates a new instance of a SelectButton.
@@ -54,6 +55,7 @@ namespace Tizen.NUI.Components
         {
             Initialize();
         }
+
         /// <summary>
         /// Creates a new instance of a SelectButton with style.
         /// </summary>
@@ -67,13 +69,13 @@ namespace Tizen.NUI.Components
         }
 
         /// <summary>
-        /// Creates a new instance of a SelectButton with attributes.
+        /// Creates a new instance of a SelectButton with style.
         /// </summary>
-        /// <param name="attributes">Create SelectButton by attributes customized by user.</param>
+        /// <param name="style">Create SelectButton by style customized by user.</param>
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public SelectButton(SelectButtonAttributes attributes) : base(attributes)
+        public SelectButton(SelectButtonStyle style) : base(style)
         {
             Initialize();
         }
@@ -106,413 +108,6 @@ namespace Tizen.NUI.Components
         }
 
         /// <summary>
-        /// Check image's resource url in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string CheckImageURL
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.ResourceURL?.All;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckImageAttributes();
-                    if (selectButtonAttributes.CheckImageAttributes.ResourceURL == null)
-                    {
-                        selectButtonAttributes.CheckImageAttributes.ResourceURL = new StringSelector();
-                    }
-                    selectButtonAttributes.CheckImageAttributes.ResourceURL.All = value;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check image's resource url selector in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public StringSelector CheckImageURLSelector
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.ResourceURL;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckImageAttributes();
-                    selectButtonAttributes.CheckImageAttributes.ResourceURL = value.Clone() as StringSelector;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check image's opacity in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public float CheckImageOpacity
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.Opacity?.All ?? 0;
-            }
-            set
-            {
-                CreateCheckImageAttributes();
-                if (selectButtonAttributes.CheckImageAttributes.Opacity == null)
-                {
-                    selectButtonAttributes.CheckImageAttributes.Opacity = new FloatSelector();
-                }
-                selectButtonAttributes.CheckImageAttributes.Opacity.All = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// Check image's opacity selector in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public FloatSelector CheckImageOpacitySelector
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.Opacity;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckImageAttributes();
-                    selectButtonAttributes.CheckImageAttributes.Opacity = value.Clone() as FloatSelector;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check image's size in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public Size CheckImageSize
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.Size ?? new Size(0, 0, 0);
-            }
-            set
-            {
-                CreateCheckImageAttributes();
-                selectButtonAttributes.CheckImageAttributes.Size = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// Background image's resource url in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string CheckBackgroundImageURL
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckBackgroundImageAttributes?.ResourceURL?.All;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckBackgroundImageAttributes();
-                    if (selectButtonAttributes.CheckBackgroundImageAttributes.ResourceURL == null)
-                    {
-                        selectButtonAttributes.CheckBackgroundImageAttributes.ResourceURL = new StringSelector();
-                    }
-                    selectButtonAttributes.CheckBackgroundImageAttributes.ResourceURL.All = value;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Background image's resource url selector in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public StringSelector CheckBackgroundImageURLSelector
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckBackgroundImageAttributes?.ResourceURL;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckBackgroundImageAttributes();
-                    selectButtonAttributes.CheckBackgroundImageAttributes.ResourceURL = value.Clone() as StringSelector;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Background image's opacity in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public float CheckBackgroundImageOpacity
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckBackgroundImageAttributes?.Opacity?.All ?? 0;
-            }
-            set
-            {
-                CreateCheckBackgroundImageAttributes();
-                if (selectButtonAttributes.CheckBackgroundImageAttributes.Opacity == null)
-                {
-                    selectButtonAttributes.CheckBackgroundImageAttributes.Opacity = new FloatSelector();
-                }
-                selectButtonAttributes.CheckBackgroundImageAttributes.Opacity.All = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// Background image's opacity selector in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public FloatSelector CheckBackgroundImageOpacitySelector
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckBackgroundImageAttributes?.Opacity;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckBackgroundImageAttributes();
-                    selectButtonAttributes.CheckBackgroundImageAttributes.Opacity = value.Clone() as FloatSelector;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Shadow image's resource url in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string CheckShadowImageURL
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckShadowImageAttributes?.ResourceURL?.All;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckShadowImageAttributes();
-                    if (selectButtonAttributes.CheckShadowImageAttributes.ResourceURL == null)
-                    {
-                        selectButtonAttributes.CheckShadowImageAttributes.ResourceURL = new StringSelector();
-                    }
-                    selectButtonAttributes.CheckShadowImageAttributes.ResourceURL.All = value;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Shadow image's resource url selector in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public StringSelector CheckShadowImageURLSelector
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckShadowImageAttributes?.ResourceURL;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckShadowImageAttributes();
-                    selectButtonAttributes.CheckShadowImageAttributes.ResourceURL = value.Clone() as StringSelector;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Shadow image's opacity in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public float CheckShadowImageOpacity
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckShadowImageAttributes?.Opacity?.All ?? 0;
-            }
-            set
-            {
-                CreateCheckShadowImageAttributes();
-                if (selectButtonAttributes.CheckShadowImageAttributes.Opacity == null)
-                {
-                    selectButtonAttributes.CheckShadowImageAttributes.Opacity = new FloatSelector();
-                }
-                selectButtonAttributes.CheckShadowImageAttributes.Opacity.All = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// Shadow image's opacity selector in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public FloatSelector CheckShadowImageOpacitySelector
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckShadowImageAttributes?.Opacity;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    CreateCheckShadowImageAttributes();
-                    selectButtonAttributes.CheckShadowImageAttributes.Opacity = value.Clone() as FloatSelector;
-                    RelayoutRequest();
-                }
-            }
-        }
-
-        /// <summary>
-        /// CheckImage left padding in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int CheckImagePaddingLeft
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.PaddingLeft ?? 0;
-            }
-            set
-            {
-                CreateCheckImageAttributes();
-                CreateCheckBackgroundImageAttributes();
-                CreateCheckShadowImageAttributes();
-                selectButtonAttributes.CheckImageAttributes.PaddingLeft = value;
-                selectButtonAttributes.CheckBackgroundImageAttributes.PaddingLeft = value;
-                selectButtonAttributes.CheckShadowImageAttributes.PaddingLeft = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// CheckImage right padding in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int CheckImagePaddingRight
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.PaddingRight ?? 0;
-            }
-            set
-            {
-                CreateCheckImageAttributes();
-                CreateCheckBackgroundImageAttributes();
-                CreateCheckShadowImageAttributes();
-                selectButtonAttributes.CheckImageAttributes.PaddingRight = value;
-                selectButtonAttributes.CheckBackgroundImageAttributes.PaddingRight = value;
-                selectButtonAttributes.CheckShadowImageAttributes.PaddingRight = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// CheckImage top padding in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int CheckImagePaddingTop
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.PaddingTop ?? 0;
-            }
-            set
-            {
-                CreateCheckImageAttributes();
-                CreateCheckBackgroundImageAttributes();
-                CreateCheckShadowImageAttributes();
-                selectButtonAttributes.CheckImageAttributes.PaddingTop = value;
-                selectButtonAttributes.CheckBackgroundImageAttributes.PaddingTop = value;
-                selectButtonAttributes.CheckShadowImageAttributes.PaddingTop = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
-        /// CheckImage bottom padding in SelectButton.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int CheckImagePaddingBottom
-        {
-            get
-            {
-                return selectButtonAttributes?.CheckImageAttributes?.PaddingBottom ?? 0;
-            }
-            set
-            {
-                CreateCheckImageAttributes();
-                CreateCheckBackgroundImageAttributes();
-                CreateCheckShadowImageAttributes();
-                selectButtonAttributes.CheckImageAttributes.PaddingBottom = value;
-                selectButtonAttributes.CheckBackgroundImageAttributes.PaddingBottom = value;
-                selectButtonAttributes.CheckShadowImageAttributes.PaddingBottom = value;
-                RelayoutRequest();
-            }
-        }
-
-        /// <summary>
         /// Theme change callback when theme is changed, this callback will be trigger.
         /// </summary>
         /// <since_tizen> 6 </since_tizen>
@@ -520,11 +115,11 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected override void OnThemeChangedEvent(object sender, StyleManager.ThemeChangeEventArgs e)
         {
-            SelectButtonAttributes tempAttributes = StyleManager.Instance.GetAttributes(style) as SelectButtonAttributes;
+            SelectButtonStyle tempAttributes = StyleManager.Instance.GetAttributes(style) as SelectButtonStyle;
             if (tempAttributes != null)
             {
-                attributes = selectButtonAttributes = tempAttributes;
-                RelayoutRequest();
+                selectButtonStyle.CopyFrom(tempAttributes);
+                UpdateUIContent();
             }
         }
 
@@ -544,103 +139,23 @@ namespace Tizen.NUI.Components
 
             if (type == DisposeTypes.Explicit)
             {
-                if (checkShadowImage != null)
+                if (selectableImage != null)
                 {
-                    Remove(checkShadowImage);
-                    checkShadowImage.Dispose();
-                    checkShadowImage = null;
-                }
-                if (checkBackgroundImage != null)
-                {
-                    Remove(checkBackgroundImage);
-                    checkBackgroundImage.Dispose();
-                    checkBackgroundImage = null;
-                }
-                if (checkImage != null)
-                {
-                    Remove(checkImage);
-                    checkImage.Dispose();
-                    checkImage = null;
+                    Remove(selectableImage);
+                    selectableImage.Dispose();
+                    selectableImage = null;
                 }
             }
 
             base.Dispose(type);
         }
 
-        /// <summary>
-        /// Update SelectButton by attributes.
-        /// </summary>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        protected override void OnUpdate()
+        private void UpdateUIContent()
         {
-            if (selectButtonAttributes.CheckImageAttributes != null)
-            {
-                if (checkImage == null)
-                {
-                    checkImage = new ImageView();
-                    checkImage.Name = "CheckImage";
-                    Add(checkImage);
-                }
-                ApplyAttributes(checkImage, selectButtonAttributes.CheckImageAttributes);  
-            }
-            else
-            {
-                if (checkImage != null)
-                {
-                    Remove(checkImage);
-                    checkImage.Dispose();
-                    checkImage = null;
-                }
-            }
-
-            if (selectButtonAttributes.CheckShadowImageAttributes != null)
-            {
-                if (checkShadowImage == null)
-                {
-                    checkShadowImage = new ImageView();
-                    checkShadowImage.Name = "CheckShadowImage";
-                    Add(checkShadowImage);
-                }
-                ApplyAttributes(checkShadowImage, selectButtonAttributes.CheckShadowImageAttributes);
-            }
-            else
-            {
-                if (checkShadowImage != null)
-                {
-                    Remove(checkShadowImage);
-                    checkShadowImage.Dispose();
-                    checkShadowImage = null;
-                }
-            }
-
-            if (selectButtonAttributes.CheckBackgroundImageAttributes != null)
-            {
-                if (checkBackgroundImage == null)
-                {
-                    checkBackgroundImage = new ImageView();
-                    checkBackgroundImage.Name = "CheckBackgroundImage";
-                    Add(checkBackgroundImage);
-                }
-                ApplyAttributes(checkBackgroundImage, selectButtonAttributes.CheckBackgroundImageAttributes);
-            }
-            else
-            {
-                if (checkBackgroundImage != null)
-                {
-                    Remove(checkBackgroundImage);
-                    checkBackgroundImage.Dispose();
-                    checkBackgroundImage = null;
-                }
-            }
-
             UpdateTextAttributes();
             base.OnUpdate();
 
-            checkShadowImage?.RaiseToTop();
-            checkBackgroundImage?.RaiseToTop();
-            checkImage?.RaiseToTop();
+            selectableImage?.RaiseToTop();
         }
 
         /// <summary>
@@ -680,10 +195,11 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool OnTouch(Touch touch)
         {
-            if (IsEnabled == false)
+            if (false == IsEnabled)
             {
                 return false;
             }
+
             PointStateType state = touch.GetState(0);
             bool ret = base.OnTouch(touch);
             switch (state)
@@ -697,15 +213,43 @@ namespace Tizen.NUI.Components
             return ret;
         }
 
+        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void ApplyStyle(ViewStyle viewStyle)
+        {
+            base.ApplyStyle(viewStyle);
+
+            SelectButtonStyle selectButtonStyle = viewStyle as SelectButtonStyle;
+
+            if (null != selectButtonStyle)
+            {
+                if (selectableImage == null)
+                {
+                    selectableImage = new ImageControl();
+                    selectableImage.Name = "SelectableImage";
+                    Add(selectableImage);
+
+                    selectableImage.RaiseToTop();
+                }
+
+                selectableImage.ApplyStyle(selectButtonStyle.SelectableImage);
+            }
+        }
+
         /// <summary>
         /// Get SelectButton attribues.
         /// </summary>
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        protected override Attributes GetAttributes()
+        protected override ViewStyle GetAttributes()
         {
-            return new SelectButtonAttributes();
+            if (null == selectButtonStyle)
+            {
+                selectButtonStyle = new SelectButtonStyle();
+            }
+
+            return selectButtonStyle;
         }
 
         /// <summary>
@@ -720,73 +264,89 @@ namespace Tizen.NUI.Components
 
         private void Initialize()
         {
-            selectButtonAttributes = attributes as SelectButtonAttributes;
-            if (selectButtonAttributes == null)
+            if (selectableImage == null)
             {
-                throw new Exception("SelectButton attribute parse error.");
+                selectableImage = new ImageControl();
+                selectableImage.Name = "SelectableImage";
+                Add(selectableImage);
+
+                selectableImage.RaiseToTop();
             }
 
-            selectButtonAttributes.IsSelectable = true;
+            selectButtonStyle.SelectableImage.PositionUsesPivotPoint = true;
+            selectButtonStyle.SelectableImage.ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft;
+            selectButtonStyle.SelectableImage.PivotPoint = Tizen.NUI.PivotPoint.TopLeft;
+
+            selectButtonStyle.IsSelectable = true;
             LayoutDirectionChanged += SelectButtonLayoutDirectionChanged;
         }
 
         private void UpdateTextAttributes()
         {
-            if (selectButtonAttributes.TextAttributes != null)
+            if (selectButtonStyle.Text != null)
             {
-                selectButtonAttributes.TextAttributes.PositionUsesPivotPoint = true;
-                selectButtonAttributes.TextAttributes.ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft;
-                selectButtonAttributes.TextAttributes.PivotPoint = Tizen.NUI.PivotPoint.TopLeft;
-                selectButtonAttributes.TextAttributes.WidthResizePolicy = ResizePolicyType.Fixed;
-                selectButtonAttributes.TextAttributes.HeightResizePolicy = ResizePolicyType.Fixed;
+                selectButtonStyle.Text.PositionUsesPivotPoint = true;
+                selectButtonStyle.Text.ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft;
+                selectButtonStyle.Text.PivotPoint = Tizen.NUI.PivotPoint.TopLeft;
+                selectButtonStyle.Text.WidthResizePolicy = ResizePolicyType.Fixed;
+                selectButtonStyle.Text.HeightResizePolicy = ResizePolicyType.Fixed;
 
-                int iconWidth = (int)CheckImageSize.Width;
+                int iconWidth = (int)selectableImage.SizeWidth;
 
-                int textPaddingLeft = selectButtonAttributes.TextAttributes.PaddingLeft;
-                int textPaddingRight = selectButtonAttributes.TextAttributes.PaddingRight;
+                int textPaddingLeft = selectButtonStyle.Text.Padding.Start;
+                int textPaddingRight = selectButtonStyle.Text.Padding.End;
 
-                if(selectButtonAttributes.TextAttributes.Size == null)
+                if(selectButtonStyle.Text.Size == null)
                 {
-                    selectButtonAttributes.TextAttributes.Size = new Size(Size2D.Width - iconWidth - CheckImagePaddingLeft - CheckImagePaddingRight - textPaddingLeft - textPaddingRight, Size2D.Height);
+                    selectButtonStyle.Text.Size = new Size(Size2D.Width - iconWidth - selectableImage.Padding.Start - selectableImage.Padding.End - textPaddingLeft - textPaddingRight, Size2D.Height);
                 }
                 
-                if(selectButtonAttributes.TextAttributes.Position == null)
+                if(selectButtonStyle.Text.Position == null)
                 {
-                    selectButtonAttributes.TextAttributes.Position = new Position(CheckImagePaddingLeft + iconWidth + CheckImagePaddingRight + textPaddingLeft, 0);
+                    selectButtonStyle.Text.Position = new Position(selectableImage.Padding.Start + iconWidth + selectableImage.Padding.End + textPaddingLeft, 0);
                 }
                 
-                selectButtonAttributes.TextAttributes.VerticalAlignment = VerticalAlignment.Center;
+                selectButtonStyle.Text.VerticalAlignment = VerticalAlignment.Center;
             }
         }
 
         private void SelectButtonLayoutDirectionChanged(object sender, LayoutDirectionChangedEventArgs e)
         {
-            if (selectButtonAttributes == null || selectButtonAttributes.TextAttributes == null)
+            if (selectButtonStyle == null || selectButtonStyle.Text == null)
             {
                 return;
             }
 
             UpdateTextAttributes();
 
-            int iconWidth = (int)CheckImageSize.Width;
+            int iconWidth = (int)selectableImage.SizeWidth;
 
-            int textPaddingLeft = selectButtonAttributes.TextAttributes.PaddingLeft;
-            int textPaddingRight = selectButtonAttributes.TextAttributes.PaddingRight;
-
+            int textPaddingLeft = selectButtonStyle.Text.Padding.Start;
+            int textPaddingRight = selectButtonStyle.Text.Padding.End;
+            int pos = 0;
             if (LayoutDirection == ViewLayoutDirectionType.RTL)
             {
-                selectButtonAttributes.TextAttributes.HorizontalAlignment = HorizontalAlignment.End;
-                selectButtonAttributes.TextAttributes.Position.X = textPaddingRight;
-                checkShadowImage.Position2D.X = checkBackgroundImage.Position2D.X = checkImage.Position2D.X = (int)(selectButtonAttributes.TextAttributes.Size.Width) + textPaddingLeft + textPaddingRight + IconPadding.End;
+                selectButtonStyle.Text.HorizontalAlignment = HorizontalAlignment.End;
+                selectButtonStyle.Text.Position.X = textPaddingRight;
+				pos = (int)(selectButtonStyle.Text.Size.Width) + textPaddingLeft + textPaddingRight;
+                if (selectButtonStyle.Icon.Padding != null)
+				{
+                    pos += selectButtonStyle.Icon.Padding.End;
+				}
 
             }
             else if (LayoutDirection == ViewLayoutDirectionType.LTR)
             {
-                selectButtonAttributes.TextAttributes.HorizontalAlignment = HorizontalAlignment.Begin;
-                selectButtonAttributes.TextAttributes.Position.X = IconPadding.Start + iconWidth + IconPadding.End + textPaddingLeft;
-                checkShadowImage.Position2D.X = checkBackgroundImage.Position2D.X = checkImage.Position2D.X = IconPadding.Start;
+                selectButtonStyle.Text.HorizontalAlignment = HorizontalAlignment.Begin;
+                selectButtonStyle.Text.Position.X = iconWidth + textPaddingLeft;
+                if (selectButtonStyle.Icon.Padding != null)
+				{
+                    selectButtonStyle.Text.Position.X += (selectButtonStyle.Icon.Padding.Start + selectButtonStyle.Icon.Padding.End); 
+                    pos = selectButtonStyle.Icon.Padding.Start;
+				}
             }
 
+            selectableImage.Position2D.X = pos;
         }
 
         private void OnSelect()
@@ -798,45 +358,6 @@ namespace Tizen.NUI.Components
                 SelectEventArgs eventArgs = new SelectEventArgs();
                 eventArgs.IsSelected = IsSelected;
                 SelectedEvent(this, eventArgs);
-            }
-        }
-
-        private void CreateCheckImageAttributes()
-        {
-            if (selectButtonAttributes.CheckImageAttributes == null)
-            {
-                selectButtonAttributes.CheckImageAttributes = new ImageAttributes()
-                {
-                    PositionUsesPivotPoint = true,
-                    ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
-                    PivotPoint =  Tizen.NUI.PivotPoint.TopLeft,
-                };
-            }
-        }
-
-        private void CreateCheckBackgroundImageAttributes()
-        {
-            if (selectButtonAttributes.CheckBackgroundImageAttributes == null)
-            {
-                selectButtonAttributes.CheckBackgroundImageAttributes = new ImageAttributes()
-                {
-                    PositionUsesPivotPoint = true,
-                    ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
-                    PivotPoint = Tizen.NUI.PivotPoint.TopLeft,
-                };
-            }
-        }
-
-        private void CreateCheckShadowImageAttributes()
-        {
-            if (selectButtonAttributes.CheckShadowImageAttributes == null)
-            {
-                selectButtonAttributes.CheckShadowImageAttributes = new ImageAttributes()
-                {
-                    PositionUsesPivotPoint = true,
-                    ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
-                    PivotPoint =  Tizen.NUI.PivotPoint.TopLeft,
-                };
             }
         }
 

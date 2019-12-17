@@ -32,9 +32,11 @@ namespace Tizen.NUI.Components
         private List<TabItem> itemList = new List<TabItem>();
         private int curIndex = 0;
         private View underline = null;
-        private TabAttributes tabAttributes = null;
         private Animation underlineAni = null;
         private bool isNeedAnimation = false;
+        private Extents space;
+
+        private TabStyle tabStyle;
 
         /// <summary>
         /// Creates a new instance of a Tab.
@@ -58,13 +60,13 @@ namespace Tizen.NUI.Components
         }
 
         /// <summary>
-        /// Creates a new instance of a Tab with attributes.
+        /// Creates a new instance of a Tab with style.
         /// </summary>
-        /// <param name="attributes">Create Tab by attributes customized by user.</param>
+        /// <param name="style">Create Tab by style customized by user.</param>
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public Tab(TabAttributes attributes) : base(attributes)
+        public Tab(TabStyle style) : base(style)
         {
             Initialize();
         }
@@ -74,6 +76,10 @@ namespace Tizen.NUI.Components
         /// </summary>
         /// <since_tizen> 6 </since_tizen>
         public event EventHandler<ItemChangedEventArgs> ItemChangedEvent;
+
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public TabStyle Style => tabStyle;
 
         /// <summary>
         /// Selected item's index in Tab.
@@ -103,11 +109,11 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.UseTextNaturalSize;
+                return tabStyle.UseTextNaturalSize;
             }
             set
             {
-                tabAttributes.UseTextNaturalSize = value;
+                tabStyle.UseTextNaturalSize = value;
                 RelayoutRequest();
             }
         }
@@ -120,11 +126,11 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.ItemSpace;
+                return tabStyle.ItemSpace;
             }
             set
             {
-                tabAttributes.ItemSpace = value;
+                tabStyle.ItemSpace = value;
                 RelayoutRequest();
             }
         }
@@ -137,20 +143,46 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                if(null == tabAttributes || null == tabAttributes.Space)
-                {
-                    return null;
-                }
-                else
-                {
-                    return new Extents((ushort)tabAttributes.Space.X, (ushort)tabAttributes.Space.Y, (ushort)tabAttributes.Space.Z, (ushort)tabAttributes.Space.W);
-                }
+                return ItemPadding;
+            }
+            set
+            {
+                ItemPadding = value;
+            }
+        }
+
+        /// <summary>
+        /// Space in Tab. Sequence as Left, Right, Top, Bottom
+        /// </summary>
+        /// <since_tizen> 6 </since_tizen>
+        public Extents ItemPadding
+        {
+            get
+            {
+                return space;
             }
             set
             {
                 if(null != value)
                 {
-                    tabAttributes.Space = new Vector4(value.Start, value.End, value.Top, value.Bottom);
+                    tabStyle.ItemPadding.CopyFrom(value);
+
+                    if (null == space)
+                    {
+                        space = new Extents((ushort start, ushort end, ushort top, ushort bottom) =>
+                        {
+                            tabStyle.ItemPadding.Start = start;
+                            tabStyle.ItemPadding.End = end;
+                            tabStyle.ItemPadding.Top = top;
+                            tabStyle.ItemPadding.Bottom = bottom;
+                            RelayoutRequest();
+                        }, value.Start, value.End, value.Top, value.Bottom);
+                    }
+                    else
+                    {
+                        space.CopyFrom(value);
+                    }
+
                     RelayoutRequest();
                 }
             }
@@ -164,15 +196,15 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.UnderLineAttributes?.Size;
+                return tabStyle.UnderLine?.Size;
             }
             set
             {
                 if (value != null)
                 {
-                    CreateUnderLineAttributes();
-                    tabAttributes.UnderLineAttributes.Size = value;
-                    RelayoutRequest();
+                    //CreateUnderLineAttributes();
+                    tabStyle.UnderLine.Size = value;
+                    //RelayoutRequest();
                 }
             }
         }
@@ -185,19 +217,19 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.UnderLineAttributes?.BackgroundColor?.All;
+                return tabStyle.UnderLine?.BackgroundColor?.All;
             }
             set
             {
                 if (value != null)
                 {
-                    CreateUnderLineAttributes();
-                    if (tabAttributes.UnderLineAttributes.BackgroundColor == null)
+                    //CreateUnderLineAttributes();
+                    if (tabStyle.UnderLine.BackgroundColor == null)
                     {
-                        tabAttributes.UnderLineAttributes.BackgroundColor = new ColorSelector();
+                        tabStyle.UnderLine.BackgroundColor = new ColorSelector();
                     }
-                    tabAttributes.UnderLineAttributes.BackgroundColor.All = value;
-                    RelayoutRequest();
+                    tabStyle.UnderLine.BackgroundColor.All = value;
+                    //RelayoutRequest();
                 }
             }
         }
@@ -210,17 +242,17 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.TextAttributes?.PointSize?.All ?? 0;
+                return tabStyle.Text?.PointSize?.All ?? 0;
             }
             set
             {
-                CreateTextAttributes();
-                if (tabAttributes.TextAttributes.PointSize == null)
+                //CreateTextAttributes();
+                if (tabStyle.Text.PointSize == null)
                 {
-                    tabAttributes.TextAttributes.PointSize = new FloatSelector();
+                    tabStyle.Text.PointSize = new FloatSelector();
                 }
-                tabAttributes.TextAttributes.PointSize.All = value;
-                RelayoutRequest();
+                tabStyle.Text.PointSize.All = value;
+                //RelayoutRequest();
             }
         }
 
@@ -232,13 +264,13 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.TextAttributes?.FontFamily;
+                return tabStyle.Text?.FontFamily.All;
             }
             set
             {
-                CreateTextAttributes();
-                tabAttributes.TextAttributes.FontFamily = value;
-                RelayoutRequest();
+                //CreateTextAttributes();
+                tabStyle.Text.FontFamily.All = value;
+                //RelayoutRequest();
             }
         }
 
@@ -250,17 +282,17 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.TextAttributes?.TextColor?.All;
+                return tabStyle.Text?.TextColor?.All;
             }
             set
             {
-                CreateTextAttributes();
-                if (tabAttributes.TextAttributes.TextColor == null)
+                //CreateTextAttributes();
+                if (tabStyle.Text.TextColor == null)
                 {
-                    tabAttributes.TextAttributes.TextColor = new ColorSelector();
+                    tabStyle.Text.TextColor = new ColorSelector();
                 }
-                tabAttributes.TextAttributes.TextColor.All = value;
-                RelayoutRequest();
+                tabStyle.Text.TextColor.All = value;
+                //RelayoutRequest();
             }
         }
 
@@ -272,15 +304,15 @@ namespace Tizen.NUI.Components
         {
             get
             {
-                return tabAttributes.TextAttributes.TextColor;
+                return (ColorSelector)tabStyle.Text.TextColor;
             }
             set
             {
                 if (value != null)
                 {
-                    CreateTextAttributes();
-                    tabAttributes.TextAttributes.TextColor = value.Clone() as ColorSelector;
-                    RelayoutRequest();
+                    //CreateTextAttributes();
+                    tabStyle.Text.TextColor = value.Clone() as ColorSelector;
+                    //RelayoutRequest();
                 }
             }
         }
@@ -328,6 +360,32 @@ namespace Tizen.NUI.Components
             itemList.RemoveAt(itemIndex);
 
             UpdateItems();
+        }
+
+        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void ApplyStyle(ViewStyle viewStyle)
+        {
+            base.ApplyStyle(viewStyle);
+
+            TabStyle tabStyle = viewStyle as TabStyle;
+
+            if (null != tabStyle)
+            {
+                if (null == underline)
+                {
+                    underline = new View()
+                    {
+                        PositionUsesPivotPoint = true,
+                        ParentOrigin = Tizen.NUI.ParentOrigin.BottomLeft,
+                        PivotPoint = Tizen.NUI.PivotPoint.BottomLeft,
+                    };
+                    Add(underline);
+                    CreateUnderLineAnimation();
+                }
+
+                underline.ApplyStyle(tabStyle.UnderLine);
+            }
         }
 
         /// <summary>
@@ -378,30 +436,6 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected override void OnUpdate()
         {
-            if (tabAttributes.UnderLineAttributes != null)
-            {
-                if (underline == null)
-                {
-                    underline = new View()
-                    {
-                        PositionUsesPivotPoint = true,
-                        ParentOrigin = Tizen.NUI.ParentOrigin.BottomLeft,
-                        PivotPoint = Tizen.NUI.PivotPoint.BottomLeft,
-                    };
-                    Add(underline);
-                    CreateUnderLineAnimation();
-                }
-                ApplyAttributes(underline, tabAttributes.UnderLineAttributes);
-            }
-
-            if (tabAttributes.TextAttributes != null)
-            {
-                if (curIndex >= 0 && curIndex < itemList.Count)
-                {
-                    itemList[curIndex].UpdateItemText(tabAttributes.TextAttributes);
-                }
-            }
-
             LayoutChild();
         }
 
@@ -411,9 +445,10 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        protected override Attributes GetAttributes()
+        protected override ViewStyle GetAttributes()
         {
-            return new TabAttributes();
+            tabStyle = new TabStyle();
+            return tabStyle;
         }
 
         /// <summary>
@@ -424,12 +459,10 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected override void OnThemeChangedEvent(object sender, StyleManager.ThemeChangeEventArgs e)
         {
-            TabAttributes tempAttributes = StyleManager.Instance.GetAttributes(style) as TabAttributes;
+            TabStyle tempAttributes = StyleManager.Instance.GetAttributes(style) as TabStyle;
             if (tempAttributes != null)
             {
-                tempAttributes.UseTextNaturalSize = tabAttributes.UseTextNaturalSize; // keep IsNatureTextWidth as original
-                attributes = tabAttributes = tempAttributes;
-                RelayoutRequest();
+                tabStyle.CopyFrom(tempAttributes);
             }
         }
 
@@ -441,7 +474,7 @@ namespace Tizen.NUI.Components
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected virtual void LayoutChild()
         {
-            if (tabAttributes == null || itemList == null)
+            if (tabStyle == null || itemList == null)
             {
                 return;
             }
@@ -451,17 +484,17 @@ namespace Tizen.NUI.Components
                 return;
             }
 
-            int preX = (int)tabAttributes.Space.X;
+            int preX = (int)tabStyle.ItemPadding.Start;
             int preW = 0;
-            int itemSpace = tabAttributes.ItemSpace;
+            int itemSpace = tabStyle.ItemSpace;
 
             if (LayoutDirection == ViewLayoutDirectionType.LTR)
             {
-                if (tabAttributes.UseTextNaturalSize == true)
+                if (tabStyle.UseTextNaturalSize == true)
                 {
                     for (int i = 0; i < totalNum; i++)
                     {
-                        preW = itemList[i].TextItem.NaturalSize2D.Width;
+                        preW = (itemList[i].NaturalSize2D != null ? itemList[i].NaturalSize2D.Width : 0);
                         itemList[i].Position2D.X = preX;
                         itemList[i].Size2D.Width = preW;
                         preX = itemList[i].Position2D.X + preW + itemSpace;
@@ -470,7 +503,7 @@ namespace Tizen.NUI.Components
                 }
                 else
                 {
-                    preW = (Size2D.Width - (int)tabAttributes.Space.X - (int)tabAttributes.Space.Y) / totalNum;
+                    preW = (Size2D.Width - (int)tabStyle.ItemPadding.Start - (int)tabStyle.ItemPadding.End) / totalNum;
                     for (int i = 0; i < totalNum; i++)
                     {
                         itemList[i].Position2D.X = preX;
@@ -482,13 +515,13 @@ namespace Tizen.NUI.Components
             }
             else
             {
-                preX = (int)tabAttributes.Space.Y;
-                if (tabAttributes.UseTextNaturalSize == true)
+                preX = (int)tabStyle.ItemPadding.End;
+                if (tabStyle.UseTextNaturalSize == true)
                 {
                     int w = Size2D.Width;
                     for (int i = 0; i < totalNum; i++)
                     {
-                        preW = (itemList[i].TextItem.NaturalSize2D != null ? itemList[i].TextItem.NaturalSize2D.Width : 0);
+                        preW = (itemList[i].NaturalSize2D != null ? itemList[i].NaturalSize2D.Width : 0);
                         itemList[i].Position2D.X = w - preW - preX;
                         itemList[i].Size2D.Width = preW;
                         preX = w - itemList[i].Position2D.X + itemSpace;
@@ -497,7 +530,7 @@ namespace Tizen.NUI.Components
                 }
                 else
                 {
-                    preW = (Size2D.Width - (int)tabAttributes.Space.X - (int)tabAttributes.Space.Y) / totalNum;
+                    preW = (Size2D.Width - (int)tabStyle.ItemPadding.Start - (int)tabStyle.ItemPadding.End) / totalNum;
                     for (int i = totalNum - 1; i >= 0; i--)
                     {
                         itemList[i].Position2D.X = preX;
@@ -512,13 +545,6 @@ namespace Tizen.NUI.Components
 
         private void Initialize()
         {
-            tabAttributes = attributes as TabAttributes;
-            if (tabAttributes == null)
-            {
-                throw new Exception("Tab attribute parse error.");
-            }
-
-            ApplyAttributes(this, tabAttributes);
             LayoutDirectionChanged += OnLayoutDirectionChanged;
         }
 
@@ -530,20 +556,22 @@ namespace Tizen.NUI.Components
         private void AddItemByIndex(TabItemData itemData, int index)
         {
             int h = 0;
-            int topSpace = (int)tabAttributes.Space.Z;
-            if (tabAttributes.UnderLineAttributes != null && tabAttributes.UnderLineAttributes.Size != null)
+            int topSpace = (int)tabStyle.ItemPadding.Top;
+            if (tabStyle.UnderLine != null && tabStyle.UnderLine.Size != null)
             {
-                h = (int)tabAttributes.UnderLineAttributes.Size.Height;
+                h = (int)tabStyle.UnderLine.Size.Height;
             }
+
             Tab.TabItem item = new TabItem();
-            ApplyAttributes(item.TextItem, tabAttributes.TextAttributes);
-            item.TextItem.Text = itemData.Text;
+            item.TextItem.ApplyStyle(tabStyle.Text);
+
+            item.Text = itemData.Text;
             item.Size2D.Height = Size2D.Height - h - topSpace;
             item.Position2D.Y = topSpace;
             item.TouchEvent += ItemTouchEvent;
             Add(item);
 
-            if(index >= itemList.Count)
+            if (index >= itemList.Count)
             {
                 itemList.Add(item);
             }
@@ -560,8 +588,7 @@ namespace Tizen.NUI.Components
             LayoutChild();
             if (itemList != null && curIndex >= 0 && curIndex < itemList.Count)
             {
-                itemList[curIndex].State = ControlStates.Selected;
-                itemList[curIndex].UpdateItemText(tabAttributes.TextAttributes);
+                itemList[curIndex].ControlState = ControlStates.Selected;
                 UpdateUnderLinePos();
             }
             else
@@ -575,30 +602,13 @@ namespace Tizen.NUI.Components
 
         private void CreateUnderLineAttributes()
         {
-            if (tabAttributes.UnderLineAttributes == null)
+            if (tabStyle.UnderLine == null)
             {
-                tabAttributes.UnderLineAttributes = new ViewAttributes()
+                tabStyle.UnderLine = new ViewStyle()
                 {
                     PositionUsesPivotPoint = true,
                     ParentOrigin = Tizen.NUI.ParentOrigin.BottomLeft,
                     PivotPoint = Tizen.NUI.PivotPoint.BottomLeft,
-                };
-            }
-        }
-
-        private void CreateTextAttributes()
-        {
-            if (tabAttributes.TextAttributes == null)
-            {
-                tabAttributes.TextAttributes = new TextAttributes()
-                {
-                    PositionUsesPivotPoint =  true,
-                    ParentOrigin = Tizen.NUI.ParentOrigin.Center,
-                    PivotPoint = Tizen.NUI.PivotPoint.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    WidthResizePolicy =  ResizePolicyType.FillToParent,
-                    HeightResizePolicy = ResizePolicyType.FillToParent
                 };
             }
         }
@@ -613,16 +623,16 @@ namespace Tizen.NUI.Components
         
         private void UpdateUnderLinePos()
         {
-            if (underline == null || tabAttributes.UnderLineAttributes == null || tabAttributes.UnderLineAttributes.Size == null
+            if (underline == null || tabStyle.UnderLine == null || tabStyle.UnderLine.Size == null
                 || itemList == null || itemList.Count <= 0)
             {
                 return;
             }
 
-            tabAttributes.UnderLineAttributes.Size.Width = itemList[curIndex].Size2D.Width;
+            tabStyle.UnderLine.Size.Width = itemList[curIndex].Size2D.Width;
 
-            underline.Size2D = new Size2D(itemList[curIndex].Size2D.Width, (int)tabAttributes.UnderLineAttributes.Size.Height);
-            underline.BackgroundColor = tabAttributes.UnderLineAttributes.BackgroundColor.All;
+            underline.Size2D = new Size2D(itemList[curIndex].Size2D.Width, (int)tabStyle.UnderLine.Size.Height);
+            underline.BackgroundColor = tabStyle.UnderLine.BackgroundColor.All;
             if (isNeedAnimation)
             {
                 CreateUnderLineAnimation();
@@ -657,11 +667,9 @@ namespace Tizen.NUI.Components
             };
             ItemChangedEvent?.Invoke(this, e);
 
-            itemList[curIndex].State = ControlStates.Normal;
-            itemList[curIndex].UpdateItemText(tabAttributes.TextAttributes);
+            itemList[curIndex].ControlState = ControlStates.Normal;
             curIndex = item.Index;
-            itemList[curIndex].State = ControlStates.Selected;
-            itemList[curIndex].UpdateItemText(tabAttributes.TextAttributes);
+            itemList[curIndex].ControlState = ControlStates.Selected;
 
             UpdateUnderLinePos();
         }
@@ -682,7 +690,7 @@ namespace Tizen.NUI.Components
             return true;
         }
 
-        internal class TabItem : Control
+        internal class TabItem : View
         {
             public TabItem() : base()
             {
@@ -699,6 +707,12 @@ namespace Tizen.NUI.Components
                 Add(TextItem);
             }
 
+            internal int Index
+            {
+                get;
+                set;
+            }
+
             public string Text
             {
                 get
@@ -711,46 +725,10 @@ namespace Tizen.NUI.Components
                 }
             }
 
-            internal int Index
-            {
-                get;
-                set;
-            }
-
             internal TextLabel TextItem
             {
                 get;
                 set;
-            }
-
-            protected override void Dispose(DisposeTypes type)
-            {
-                if (disposed)
-                {
-                    return;
-                }
-
-                if (type == DisposeTypes.Explicit)
-                {
-                    if (TextItem != null)
-                    {
-                        Remove(TextItem);
-                        TextItem.Dispose();
-                        TextItem = null;
-                    }
-                }
-
-                base.Dispose(type);
-            }
-
-            protected override Attributes GetAttributes()
-            {
-                return null;
-            }
-
-            internal void UpdateItemText(TextAttributes attrs)
-            {
-                ApplyAttributes(TextItem, attrs);
             }
         }
 

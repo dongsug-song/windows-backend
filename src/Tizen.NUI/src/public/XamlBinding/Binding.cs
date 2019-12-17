@@ -23,6 +23,20 @@ namespace Tizen.NUI.Binding
         object _source;
         string _updateSourceEventName;
 
+        private BindableProperty property;
+        public BindableProperty Property
+        {
+            get
+            {
+                return property;
+            }
+            set
+            {
+                property = value;
+                Path = value.PropertyName;
+            }
+        }
+
         /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Binding()

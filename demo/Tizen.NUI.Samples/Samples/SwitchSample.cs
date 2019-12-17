@@ -61,15 +61,15 @@ namespace Tizen.NUI.Samples
                 utilitySwitch[i] = new Switch();
                 utilitySwitch[i].Size2D = new Size2D(96, 60);
                 utilitySwitch[i].Position2D = new Position2D(300, 300 + i * 100);
-                utilitySwitch[i].SwitchHandlerImageSize = new Size(60, 60);
-                utilitySwitch[i].SwitchBackgroundImageURLSelector = new StringSelector
+                utilitySwitch[i].Style.Thumb.Size = new Size(60, 60);
+                utilitySwitch[i].Style.Track.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_on.png",
                     Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off_dim.png",
                     DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_on_dim.png",
                 };
-                utilitySwitch[i].SwitchHandlerImageURLSelector = new StringSelector
+                utilitySwitch[i].Style.Thumb.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -81,15 +81,15 @@ namespace Tizen.NUI.Samples
                 familySwitch[i] = new Switch();
                 familySwitch[i].Size2D = new Size2D(96, 60);
                 familySwitch[i].Position2D = new Position2D(500, 300 + i * 100);
-                familySwitch[i].SwitchHandlerImageSize = new Size(60, 60);
-                familySwitch[i].SwitchBackgroundImageURLSelector = new StringSelector
+                familySwitch[i].Style.Thumb.Size = new Size(60, 60);
+                familySwitch[i].Style.Track.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_24c447.png",
                     Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_dim_24c447.png",
                 };
-                familySwitch[i].SwitchHandlerImageURLSelector = new StringSelector
+                familySwitch[i].Style.Thumb.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -100,15 +100,15 @@ namespace Tizen.NUI.Samples
                 foodSwitch[i] = new Switch();
                 foodSwitch[i].Size2D = new Size2D(96, 60);
                 foodSwitch[i].Position2D = new Position2D(700, 300 + i * 100);
-                foodSwitch[i].SwitchHandlerImageSize = new Size(60, 60);
-                foodSwitch[i].SwitchBackgroundImageURLSelector = new StringSelector
+                foodSwitch[i].Style.Thumb.Size = new Size(60, 60);
+                foodSwitch[i].Style.Track.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_ec7510.png",
                     Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_dim_ec7510.png",
                 };
-                foodSwitch[i].SwitchHandlerImageURLSelector = new StringSelector
+                foodSwitch[i].Style.Thumb.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -120,15 +120,15 @@ namespace Tizen.NUI.Samples
                 kitchenSwitch[i] = new Switch();
                 kitchenSwitch[i].Size2D = new Size2D(96, 60);
                 kitchenSwitch[i].Position2D = new Position2D(900, 300 + i * 100);
-                kitchenSwitch[i].SwitchHandlerImageSize = new Size(60, 60);
-                kitchenSwitch[i].SwitchBackgroundImageURLSelector = new StringSelector
+                kitchenSwitch[i].Style.Thumb.Size = new Size(60, 60);
+                kitchenSwitch[i].Style.Track.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_9762d9.png",
                     Disabled = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                     DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_dim_9762d9.png",
                 };
-                kitchenSwitch[i].SwitchHandlerImageURLSelector = new StringSelector
+                kitchenSwitch[i].Style.Thumb.ResourceUrl = new Selector<string>
                 {
                     Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                     Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -158,12 +158,12 @@ namespace Tizen.NUI.Samples
                 root.Add(modeText2[i]);
             }
 
-            SwitchAttributes utilityAttrs = new SwitchAttributes
+            SwitchStyle utilityAttrs = new SwitchStyle
             {
                 IsSelectable = true,
-                SwitchBackgroundImageAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_on.png",
@@ -171,10 +171,10 @@ namespace Tizen.NUI.Samples
                         DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_on_dim.png",
                     },
                 },
-                SwitchHandlerImageAttributes = new ImageAttributes
+                Thumb = new ImageViewStyle
                 {
                     Size = new Size(60, 60),
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -183,12 +183,12 @@ namespace Tizen.NUI.Samples
                     },
                 },
             };         
-            SwitchAttributes familyAttrs = new SwitchAttributes
+            SwitchStyle familyAttrs = new SwitchStyle
             {
                 IsSelectable = true,
-                SwitchBackgroundImageAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_24c447.png",
@@ -196,10 +196,10 @@ namespace Tizen.NUI.Samples
                         DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_dim_24c447.png",
                     },
                 },
-                SwitchHandlerImageAttributes = new ImageAttributes
+                Thumb = new ImageViewStyle
                 {
                     Size = new Size(60, 60),
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -208,12 +208,12 @@ namespace Tizen.NUI.Samples
                     },
                 },
             };
-            SwitchAttributes foodAttrs = new SwitchAttributes
+            SwitchStyle foodAttrs = new SwitchStyle
             {
                 IsSelectable = true,
-                SwitchBackgroundImageAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_ec7510.png",
@@ -221,10 +221,10 @@ namespace Tizen.NUI.Samples
                         DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_dim_ec7510.png",
                     },
                 },
-                SwitchHandlerImageAttributes = new ImageAttributes
+                Thumb = new ImageViewStyle
                 {
                     Size = new Size(60, 60),
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
@@ -233,12 +233,12 @@ namespace Tizen.NUI.Samples
                     },
                 },
             };
-            SwitchAttributes kitchenAttrs = new SwitchAttributes
+            SwitchStyle kitchenAttrs = new SwitchStyle
             {
                 IsSelectable = true,
-                SwitchBackgroundImageAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_bg_off.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_9762d9.png",
@@ -246,10 +246,10 @@ namespace Tizen.NUI.Samples
                         DisabledSelected = CommonResource.GetFHResourcePath() + "9. Controller/[Controller] App Primary Color/controller_switch_bg_on_dim_9762d9.png",
                     },
                 },
-                SwitchHandlerImageAttributes = new ImageAttributes
+                Thumb = new ImageViewStyle
                 {
                     Size =  new Size(60, 60),
-                    ResourceURL = new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         Normal = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",
                         Selected = CommonResource.GetFHResourcePath() + "9. Controller/controller_switch_handler.png",

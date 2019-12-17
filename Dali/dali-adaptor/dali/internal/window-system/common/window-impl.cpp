@@ -29,18 +29,14 @@
 #include <dali/devel-api/adaptor-framework/orientation.h>
 #include <dali/integration-api/events/touch-event-integ.h>
 
-#ifdef DALI_ADAPTOR_COMPILATION
-#include <dali/integration-api/render-surface-interface.h>
-#else
-#include <dali/integration-api/adaptors/render-surface-interface.h>
-#endif
-
 // INTERNAL HEADERS
+#include <dali/integration-api/adaptor-framework/render-surface-interface.h>
 #include <dali/internal/window-system/common/event-handler.h>
 #include <dali/internal/window-system/common/orientation-impl.h>
 #include <dali/internal/window-system/common/render-surface-factory.h>
 #include <dali/internal/window-system/common/window-factory.h>
 #include <dali/internal/window-system/common/window-base.h>
+#include <dali/internal/window-system/common/window-system.h>
 #include <dali/internal/window-system/common/window-render-surface.h>
 #include <dali/internal/window-system/common/window-visibility-observer.h>
 
@@ -78,15 +74,18 @@ Window::Window()
   mResizeEnabled( false ),
   mType( Dali::Window::NORMAL ),
   mParentWindow( NULL ),
-  mPreferredOrientation( Dali::Window::PORTRAIT ),
+  mPreferredAngle( 0 ),
   mRotationAngle( 0 ),
   mWindowWidth( 0 ),
   mWindowHeight( 0 ),
+  mOrientationMode( Internal::Adaptor::Window::OrientationMode::PORTRAIT ),
   mFocusChangedSignal(),
   mResizedSignal(),
   mDeleteRequestSignal(),
   mFocusChangeSignal(),
-  mResizeSignal()
+  mResizeSignal(),
+  mVisibilityChangedSignal(),
+  mTransitionEffectEventSignal()
 {
 }
 
@@ -113,6 +112,7 @@ void Window::Initialize(const PositionSize& positionSize, const std::string& nam
   mWindowBase->IconifyChangedSignal().Connect( this, &Window::OnIconifyChanged );
   mWindowBase->FocusChangedSignal().Connect( this, &Window::OnFocusChanged );
   mWindowBase->DeleteRequestSignal().Connect( this, &Window::OnDeleteRequest );
+  mWindowBase->TransitionEffectEventSignal().Connect( this, &Window::OnTransitionEffectEvent );
 
   mWindowSurface->OutputTransformedSignal().Connect( this, &Window::OnOutputTransformed );
 
@@ -127,6 +127,18 @@ void Window::Initialize(const PositionSize& positionSize, const std::string& nam
   mWindowSurface->Map();
 
   mOrientation = Orientation::New( this );
+
+  // Get OrientationMode
+  int screenWidth, screenHeight;
+  WindowSystem::GetScreenSize( screenWidth, screenHeight );
+  if( screenWidth > screenHeight )
+  {
+    mOrientationMode = Internal::Adaptor::Window::OrientationMode::LANDSCAPE;
+  }
+  else
+  {
+    mOrientationMode = Internal::Adaptor::Window::OrientationMode::PORTRAIT;
+  }
 }
 
 void Window::OnAdaptorSet(Dali::Adaptor& adaptor)
@@ -200,12 +212,12 @@ Dali::RenderTaskList Window::GetRenderTaskList() const
 void Window::AddAvailableOrientation( Dali::Window::WindowOrientation orientation )
 {
   bool found = false;
-
   if( orientation <= Dali::Window::LANDSCAPE_INVERSE )
   {
-    for( std::size_t i = 0; i < mAvailableOrientations.size(); i++ )
+    int convertedAngle = ConvertToAngle( orientation );
+    for( std::size_t i = 0; i < mAvailableAngles.size(); i++ )
     {
-      if( mAvailableOrientations[i] == orientation )
+      if( mAvailableAngles[i] == convertedAngle )
       {
         found = true;
         break;
@@ -214,54 +226,113 @@ void Window::AddAvailableOrientation( Dali::Window::WindowOrientation orientatio
 
     if( !found )
     {
-      mAvailableOrientations.push_back( orientation );
-      SetAvailableOrientations( mAvailableOrientations );
+      mAvailableAngles.push_back( convertedAngle );
+      SetAvailableAnlges( mAvailableAngles );
     }
   }
 }
 
 void Window::RemoveAvailableOrientation( Dali::Window::WindowOrientation orientation )
 {
-  for( std::vector<Dali::Window::WindowOrientation>::iterator iter = mAvailableOrientations.begin();
-       iter != mAvailableOrientations.end(); ++iter )
+  int convertedAngle = ConvertToAngle( orientation );
+  for( std::vector< int >::iterator iter = mAvailableAngles.begin();
+       iter != mAvailableAngles.end(); ++iter )
   {
-    if( *iter == orientation )
+    if( *iter == convertedAngle )
     {
-      mAvailableOrientations.erase( iter );
+      mAvailableAngles.erase( iter );
       break;
     }
   }
-  SetAvailableOrientations( mAvailableOrientations );
-}
 
-void Window::SetAvailableOrientations( const std::vector< Dali::Window::WindowOrientation >& orientations )
-{
-  if( orientations.size() > 4 )
-  {
-    DALI_LOG_INFO( gWindowLogFilter, Debug::Verbose, "Window::SetAvailableOrientations: Invalid vector size! [%d]\n", orientations.size() );
-    return;
-  }
-
-  mAvailableOrientations = orientations;
-
-  mWindowBase->SetAvailableOrientations( mAvailableOrientations );
-}
-
-const std::vector< Dali::Window::WindowOrientation >& Window::GetAvailableOrientations()
-{
-  return mAvailableOrientations;
+  SetAvailableAnlges( mAvailableAngles );
 }
 
 void Window::SetPreferredOrientation( Dali::Window::WindowOrientation orientation )
 {
-  mPreferredOrientation = orientation;
-
-  mWindowBase->SetPreferredOrientation( mPreferredOrientation );
+  mPreferredAngle = ConvertToAngle( orientation );
+  mWindowBase->SetPreferredAngle( mPreferredAngle );
 }
 
 Dali::Window::WindowOrientation Window::GetPreferredOrientation()
 {
-  return mPreferredOrientation;
+  Dali::Window::WindowOrientation preferredOrientation = ConvertToOrientation( mPreferredAngle );
+  return preferredOrientation;
+}
+
+void Window::SetAvailableAnlges( const std::vector< int >& angles )
+{
+  if( angles.size() > 4 )
+  {
+    DALI_LOG_INFO( gWindowLogFilter, Debug::Verbose, "Window::SetAvailableAnlges: Invalid vector size! [%d]\n", angles.size() );
+    return;
+  }
+
+  mWindowBase->SetAvailableAnlges( angles );
+}
+
+int Window::ConvertToAngle( Dali::Window::WindowOrientation orientation )
+{
+  int convertAngle = static_cast< int >( orientation );
+  if( mOrientationMode == Internal::Adaptor::Window::OrientationMode::LANDSCAPE )
+  {
+    switch( orientation )
+    {
+      case Dali::Window::LANDSCAPE:
+      {
+        convertAngle = 0;
+        break;
+      }
+      case Dali::Window::PORTRAIT:
+      {
+        convertAngle = 90;
+        break;
+      }
+      case Dali::Window::LANDSCAPE_INVERSE:
+      {
+        convertAngle = 180;
+        break;
+      }
+      case Dali::Window::PORTRAIT_INVERSE:
+      {
+        convertAngle = 270;
+        break;
+      }
+    }
+  }
+  return convertAngle;
+}
+
+Dali::Window::WindowOrientation Window::ConvertToOrientation( int angle )
+{
+  Dali::Window::WindowOrientation orientation = static_cast< Dali::Window::WindowOrientation >( angle );
+  if( mOrientationMode == Internal::Adaptor::Window::OrientationMode::LANDSCAPE )
+  {
+    switch( angle )
+    {
+      case 0:
+      {
+        orientation = Dali::Window::LANDSCAPE;
+        break;
+      }
+      case 90:
+      {
+        orientation = Dali::Window::PORTRAIT;
+        break;
+      }
+      case 180:
+      {
+        orientation = Dali::Window::LANDSCAPE_INVERSE;
+        break;
+      }
+      case 270:
+      {
+        orientation = Dali::Window::PORTRAIT_INVERSE;
+        break;
+      }
+    }
+  }
+  return orientation;
 }
 
 Dali::Any Window::GetNativeHandle() const
@@ -291,6 +362,9 @@ void Window::Show()
   {
     WindowVisibilityObserver* observer( mAdaptor );
     observer->OnWindowShown();
+
+    Dali::Window handle( this );
+    mVisibilityChangedSignal.Emit( handle, true );
   }
 
   DALI_LOG_RELEASE_INFO( "Window (%p) Show(): iconified = %d\n", this, mIconified );
@@ -306,6 +380,9 @@ void Window::Hide()
   {
     WindowVisibilityObserver* observer( mAdaptor );
     observer->OnWindowHidden();
+
+    Dali::Window handle( this );
+    mVisibilityChangedSignal.Emit( handle, false );
   }
 
   DALI_LOG_RELEASE_INFO( "Window (%p) Hide(): iconified = %d\n", this, mIconified );
@@ -563,6 +640,9 @@ void Window::OnIconifyChanged( bool iconified )
     {
       WindowVisibilityObserver* observer( mAdaptor );
       observer->OnWindowHidden();
+
+      Dali::Window handle( this );
+      mVisibilityChangedSignal.Emit( handle, false );
     }
 
     DALI_LOG_RELEASE_INFO( "Window (%p) Iconified: visible = %d\n", this, mVisible );
@@ -575,6 +655,9 @@ void Window::OnIconifyChanged( bool iconified )
     {
       WindowVisibilityObserver* observer( mAdaptor );
       observer->OnWindowShown();
+
+      Dali::Window handle( this );
+      mVisibilityChangedSignal.Emit( handle, true );
     }
 
     DALI_LOG_RELEASE_INFO( "Window (%p) Deiconified: visible = %d\n", this, mVisible );
@@ -599,6 +682,12 @@ void Window::OnOutputTransformed()
 void Window::OnDeleteRequest()
 {
   mDeleteRequestSignal.Emit();
+}
+
+void Window::OnTransitionEffectEvent( DevelWindow::EffectState state, DevelWindow::EffectType type )
+{
+  Dali::Window handle( this );
+  mTransitionEffectEventSignal.Emit( handle, state, type );
 }
 
 void Window::OnTouchPoint( Dali::Integration::Point& point, int timeStamp )
@@ -629,14 +718,14 @@ void Window::OnRotation( const RotationEvent& rotation )
 
   SurfaceResized();
 
-  mAdaptor->SurfaceResizePrepare( mSurface.get(), Adaptor::SurfaceSize( mRotationAngle, mWindowHeight ) );
+  mAdaptor->SurfaceResizePrepare( mSurface.get(), Adaptor::SurfaceSize( mWindowWidth, mWindowHeight ) );
 
   // Emit signal
   Dali::Window handle( this );
-  mResizedSignal.Emit( Dali::Window::WindowSize( mRotationAngle, mWindowHeight ) );
-  mResizeSignal.Emit( handle, Dali::Window::WindowSize( mRotationAngle, mWindowHeight ) );
+  mResizedSignal.Emit( Dali::Window::WindowSize( mWindowWidth, mWindowHeight ) );
+  mResizeSignal.Emit( handle, Dali::Window::WindowSize( mWindowWidth, mWindowHeight ) );
 
-  mAdaptor->SurfaceResizeComplete( mSurface.get(), Adaptor::SurfaceSize( mRotationAngle, mWindowHeight ) );
+  mAdaptor->SurfaceResizeComplete( mSurface.get(), Adaptor::SurfaceSize( mWindowWidth, mWindowHeight ) );
 }
 
 void Window::OnPause()
@@ -708,20 +797,20 @@ void Window::SetParent( Dali::Window& parent )
   if ( DALI_UNLIKELY( parent ) )
   {
     mParentWindow = parent;
-    Dali::Window grandParent = Dali::DevelWindow::GetParent( parent );
+    Dali::Window self = Dali::Window( this );
     // check circular parent window setting
-    if ( DALI_UNLIKELY( grandParent ) && mWindowBase->IsMatchedWindow( grandParent.GetNativeHandle() ) )
+    if ( Dali::DevelWindow::GetParent( parent ) == self )
     {
       Dali::DevelWindow::Unparent( parent );
     }
-    mWindowBase->SetParent( parent.GetNativeHandle() );
+    mWindowBase->SetParent( GetImplementation( mParentWindow ).mWindowBase );
   }
 }
 
 void Window::Unparent()
 {
-  Any parent;
-  mWindowBase->SetParent( parent );
+  mWindowBase->SetParent( nullptr );
+  mParentWindow.Reset();
 }
 
 Dali::Window Window::GetParent()

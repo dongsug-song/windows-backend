@@ -19,6 +19,8 @@
  */
 
 // EXTERNAL INCLUDES
+#include <functional>
+#include <memory>
 #include <dali/public-api/actors/actor.h>
 #include <dali/public-api/common/vector-wrapper.h>
 #include <dali/public-api/object/base-object.h>
@@ -26,8 +28,6 @@
 
 // INTERNAL INCLUDES
 #include <dali/devel-api/adaptor-framework/input-method-context.h>
-
-#include <memory>
 
 namespace Dali
 {
@@ -273,6 +273,11 @@ public:
    */
   virtual void SetInputPanelPosition( unsigned int x, unsigned int y ) {}
 
+  /**
+   * @copydoc Dali::InputMethodContext::GetPreeditStyle()
+   */
+  virtual Dali::InputMethodContext::PreeditStyle GetPreeditStyle() const { return Dali::InputMethodContext::PreeditStyle(); }
+
 public:  // Signals
 
   /**
@@ -315,7 +320,7 @@ public:
   /**
    * Constructor
    */
-  InputMethodContext() = default;
+  InputMethodContext();
 
   /**
    * Destructor
@@ -328,6 +333,33 @@ private:
   InputMethodContext& operator=( InputMethodContext& )  = delete;
 
 protected:
+  /**
+   * @brief Struct for providing Operation enumeration
+   */
+  struct Operation
+  {
+    enum Type
+    {
+      ALLOW_TEXT_PREDICTION = 0,
+      AUTO_ENABLE_INPUT_PANEL,
+      NOTIFY_TEXT_INPUT_MULTILINE,
+      SET_CONTENT_MIME_TYPES,
+      SET_INPUT_PANEL_DATA,
+      SET_INPUT_PANEL_LANGUAGE,
+      SET_INPUT_PANEL_POSITION,
+      SET_RETURN_KEY_STATE,
+      MAX_COUNT
+    };
+  };
+
+  using OperationList = std::vector< std::function<void()> >;
+
+  /**
+   * @brief Apply backup operations to the InputMethodContext
+   */
+  void ApplyBackupOperations();
+
+protected:
 
   ActivatedSignalType        mActivatedSignal;
   KeyboardEventSignalType    mEventSignal;
@@ -336,6 +368,7 @@ protected:
   LanguageChangedSignalType  mKeyboardLanguageChangedSignal;
   KeyboardTypeSignalType     mKeyboardTypeChangedSignal;
   ContentReceivedSignalType  mContentReceivedSignal;
+  OperationList              mBackupOperations;
 
 public:
 

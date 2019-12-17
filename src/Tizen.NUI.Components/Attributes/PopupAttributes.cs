@@ -15,58 +15,41 @@
  *
  */
 using System.ComponentModel;
+using Tizen.NUI.BaseComponents;
+using Tizen.NUI.Binding;
 
 namespace Tizen.NUI.Components
 {
     /// <summary>
-    /// PopupAttributes is a class which saves Popup's ux data.
+    /// PopupStyle is a class which saves Popup's ux data.
     /// </summary>
     /// <since_tizen> 6 </since_tizen>
     /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class PopupAttributes : ViewAttributes
+    public class PopupStyle : ControlStyle
     {
         /// <summary>
-        /// Creates a new instance of a PopupAttributes.
+        /// Creates a new instance of a PopupStyle.
         /// </summary>
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public PopupAttributes() : base() { }
-        /// <summary>
-        /// Creates a new instance of a PopupAttributes with attributes.
-        /// </summary>
-        /// <param name="attributes">Create PopupAttributes by attributes customized by user.</param>
-        /// <since_tizen> 6 </since_tizen>
-        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public PopupAttributes(PopupAttributes attributes) : base(attributes)
+        public PopupStyle() : base()
         {
-            if (attributes.ShadowImageAttributes != null)
-            {
-                ShadowImageAttributes = attributes.ShadowImageAttributes.Clone() as ImageAttributes;
-            }
+            InitSubStyle();
+        }
 
-            if (attributes.BackgroundImageAttributes != null)
-            {
-                BackgroundImageAttributes = attributes.BackgroundImageAttributes.Clone() as ImageAttributes;
-            }
-
-            if (attributes.TitleTextAttributes != null)
-            {
-                TitleTextAttributes = attributes.TitleTextAttributes.Clone() as TextAttributes;
-            }
-
-            if (attributes.ButtonAttributes != null)
-            {
-                ButtonAttributes = attributes.ButtonAttributes.Clone() as ButtonAttributes;
-            }
-
-            if(attributes.ShadowOffset != null)
-            {
-                ShadowOffset = new Vector4(attributes.ShadowOffset.W, attributes.ShadowOffset.X, attributes.ShadowOffset.Y, attributes.ShadowOffset.Z);
-            }
-
+        /// <summary>
+        /// Creates a new instance of a PopupStyle with style.
+        /// </summary>
+        /// <param name="style">Create PopupStyle by style customized by user.</param>
+        /// <since_tizen> 6 </since_tizen>
+        /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public PopupStyle(PopupStyle style) : base(style)
+        {
+            InitSubStyle();
+            this.CopyFrom(style);
         }
 
         /// <summary>
@@ -75,7 +58,7 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ImageAttributes ShadowImageAttributes
+        public ImageViewStyle Shadow
         {
             get;
             set;
@@ -87,7 +70,7 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ImageAttributes BackgroundImageAttributes
+        public ImageViewStyle Background
         {
             get;
             set;
@@ -99,7 +82,7 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TextAttributes TitleTextAttributes
+        public TextLabelStyle Title
         {
             get;
             set;
@@ -123,7 +106,7 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ButtonAttributes ButtonAttributes
+        public ButtonStyle Buttons
         {
             get;
             set;
@@ -135,9 +118,83 @@ namespace Tizen.NUI.Components
         /// <since_tizen> 6 </since_tizen>
         /// This will be public opened in tizen_5.5 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override Attributes Clone()
+        public override void CopyFrom(BindableObject bindableObject)
         {
-            return new PopupAttributes(this);
+            base.CopyFrom(bindableObject);
+
+            PopupStyle popupAttributes = bindableObject as PopupStyle;
+            if (popupAttributes != null)
+            {
+                if (popupAttributes.Shadow != null)
+                {
+                    Shadow.CopyFrom(popupAttributes.Shadow);
+                }
+
+                if (popupAttributes.Background != null)
+                {
+                    Background.CopyFrom(popupAttributes.Background);
+                }
+
+                if (popupAttributes.Title != null)
+                {
+                    Title.CopyFrom(popupAttributes.Title);
+                }
+
+                if (popupAttributes.Buttons != null)
+                {
+                    Buttons.CopyFrom(popupAttributes.Buttons);
+                }
+
+                if (popupAttributes.ShadowOffset != null)
+                {
+                    ShadowOffset = new Vector4(popupAttributes.ShadowOffset.W, popupAttributes.ShadowOffset.X, popupAttributes.ShadowOffset.Y, popupAttributes.ShadowOffset.Z);
+                }
+            }
+        }
+
+        private void InitSubStyle()
+        {
+            Shadow = new ImageViewStyle()
+            {
+                PositionUsesPivotPoint = true,
+                ParentOrigin = Tizen.NUI.ParentOrigin.Center,
+                PivotPoint = Tizen.NUI.PivotPoint.Center
+            };
+
+            Background = new ImageViewStyle()
+            {
+                PositionUsesPivotPoint = true,
+                ParentOrigin = Tizen.NUI.ParentOrigin.Center,
+                PivotPoint = Tizen.NUI.PivotPoint.Center,
+                WidthResizePolicy = ResizePolicyType.FillToParent,
+                HeightResizePolicy = ResizePolicyType.FillToParent
+            };
+
+            Title = new TextLabelStyle()
+            {
+                Size = new Size(0, 0),
+                PositionUsesPivotPoint = true,
+                ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
+                PivotPoint = Tizen.NUI.PivotPoint.TopLeft,
+                HorizontalAlignment = HorizontalAlignment.Begin,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+
+            Buttons = new ButtonStyle()
+            {
+                Size = new Size(0, 132),
+                PositionUsesPivotPoint = true,
+                ParentOrigin = Tizen.NUI.ParentOrigin.BottomLeft,
+                PivotPoint = Tizen.NUI.PivotPoint.BottomLeft,
+                Text = new TextLabelStyle
+                {
+                    PositionUsesPivotPoint = true,
+                    ParentOrigin = Tizen.NUI.ParentOrigin.Center,
+                    PivotPoint = Tizen.NUI.PivotPoint.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                }
+            };
         }
     }
 }

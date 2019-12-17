@@ -23,17 +23,16 @@
 #include <dali/integration-api/debug.h>
 
 // INTERNAL INCLUDES
-#include <dali/integration-api/trigger-event-factory-interface.h>
-#include <dali/integration-api/thread-synchronization-interface.h>
-#include <dali/internal/graphics/gles/egl-implementation.h>
+#include <dali/integration-api/adaptor-framework/thread-synchronization-interface.h>
+#include <dali/integration-api/adaptor-framework/trigger-event-factory-interface.h>
 #include <dali/internal/adaptor/common/adaptor-impl.h>
 #include <dali/internal/adaptor/common/adaptor-internal-services.h>
+#include <dali/internal/graphics/gles/egl-graphics.h>
+#include <dali/internal/graphics/gles/egl-implementation.h>
 #include <dali/internal/window-system/common/window-base.h>
 #include <dali/internal/window-system/common/window-factory.h>
 #include <dali/internal/window-system/common/window-system.h>
-#include <dali/internal/graphics/gles/egl-graphics.h>
 #include <dali/internal/system/common/environment-variables.h>
-
 
 namespace Dali
 {
@@ -101,7 +100,6 @@ void WindowRenderSurface::Initialize( Any surface )
     // Default window size == screen size
     mPositionSize.x = 0;
     mPositionSize.y = 0;
-
     WindowSystem::GetScreenSize( mPositionSize.width, mPositionSize.height );
   }
 

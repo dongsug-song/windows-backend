@@ -17,60 +17,44 @@ namespace Tizen.NUI.Samples
 
             root = new View()
             {
-                Size2D = new Size2D(1920, 1080),
+                Size = new Size(1920, 1080),
             };
 
             CreateBoardAndButtons();
 
-            toast1_1 = new Toast();
-            toast1_1.Position2D = new Position2D(50, 350);
-            toast1_1.Size2D = new Size2D(512, 132);
-            toast1_1.BackgroundImageBorder = new Rectangle(64, 64, 4, 4);
-            toast1_1.TextArray = new string[1] { "null parameter construction" };
-            toast1_1.PointSize = 26;
-            toast1_1.TextColor = Color.White;
-            toast1_1.BackgroundImageURL = CommonResource.GetFHResourcePath() + "12. Toast Popup/toast_background.png";
-            toast1_1.TextPadding = new Extents(38, 38, 96, 96);
-            
-            toast1_1.Duration = 1500;
-            root.Add(toast1_1);
+            toast1_1 = Toast.FromText("null parameter construction", 1000);
+            toast1_1.Size = new Size(500, 132);
+            toast1_1.Post(window);
 
-            ToastAttributes attr = new ToastAttributes
+            ToastStyle attr = new ToastStyle
             {
                 Size = new Size(512, 132),
-                TextAttributes = new TextAttributes
+                Text= new TextLabelStyle
                 {
-                    PaddingTop = 38,
-                    PaddingBottom = 38,
-                    PaddingLeft = 96,
-                    PaddingRight = 96,
-                    PointSize = new FloatSelector { All = 26 },
-                    TextColor = new ColorSelector { All = Color.White },
+                    Padding = new Extents(96, 96, 38, 38),
+                    PointSize = new Selector<float?> { All = 26 },
+                    TextColor = new Selector<Color> { All = Color.White },
                 },
-                BackgroundImageAttributes = new ImageAttributes
+                Background= new ImageViewStyle
                 {
-                    ResourceURL=new StringSelector
+                    ResourceUrl = new Selector<string>
                     {
                         All = CommonResource.GetFHResourcePath() + "12. Toast Popup/toast_background.png",
                     },
-                    Border = new RectangleSelector()
+                    Border = new Selector<Rectangle>()
                     {
                         All = new Rectangle(64, 64, 4, 4),
                     }
                 },
-                TextLineHeight = 56,
-                TextLineSpace = 4,
                 Duration = 3000,
             };
-
+        
             toast2_1 = new Toast(attr);
-            toast2_1.TextArray = new string[1] {"attibute parameter construction" };
-            toast2_1.Position2D = new Position2D(650, 350);
-            //toast2_1.Size2D = new Size2D(512, 132);
-            root.Add(toast2_1);
+            toast2_1.Size = new Size(500, 132);
+            toast2_1.Message = "attibute parameter construction";
+            toast2_1.Post(window);
 
             board.UpFocusableView = button1;
-
             window.Add(root);
 
             FocusManager.Instance.SetCurrentFocusView(button1);
@@ -79,8 +63,8 @@ namespace Tizen.NUI.Samples
         void CreateBoardAndButtons()
         {
             board = new TextLabel();
-            board.Size2D = new Size2D(1000, 100);
-            board.Position2D = new Position2D(430, 900);
+            board.Size = new Size(1000, 100);
+            board.Position = new Position(430, 900);
             board.PointSize = 30;
             board.HorizontalAlignment = HorizontalAlignment.Center;
             board.VerticalAlignment = VerticalAlignment.Center;
@@ -92,8 +76,8 @@ namespace Tizen.NUI.Samples
             board.FocusLost += Board_FocusLost;
 
             board1 = new TextLabel();
-            board1.Size2D = new Size2D(300, 70);
-            board1.Position2D = new Position2D(50, 200);
+            board1.Size = new Size(300, 70);
+            board1.Position = new Position(50, 200);
             board1.PointSize = 20;
             board1.HorizontalAlignment = HorizontalAlignment.Center;
             board1.VerticalAlignment = VerticalAlignment.Center;
@@ -105,8 +89,8 @@ namespace Tizen.NUI.Samples
             board1.FocusLost += Board_FocusLost;
 
             board2 = new TextLabel();
-            board2.Size2D = new Size2D(300, 70);
-            board2.Position2D = new Position2D(650, 200);
+            board2.Size = new Size(300, 70);
+            board2.Position = new Position(650, 200);
             board2.PointSize = 20;
             board2.HorizontalAlignment = HorizontalAlignment.Center;
             board2.VerticalAlignment = VerticalAlignment.Center;
@@ -119,18 +103,18 @@ namespace Tizen.NUI.Samples
 
             button1 = new Button();
             button1.BackgroundColor = Color.Green;
-            button1.Position2D = new Position2D(80, 600);
-            button1.Size2D = new Size2D(200, 50);
-            button1.Text = "toast1_1 Show";
+            button1.Position = new Position(80, 600);
+            button1.Size = new Size(200, 50);
+            button1.Style.Text.Text = "toast1_1 Show";
             root.Add(button1);
             button1.Focusable = true;
             button1.ClickEvent += toast1_1Show;
 
             button2 = new Button();
             button2.BackgroundColor = Color.Green;
-            button2.Position2D = new Position2D(700, 600);
-            button2.Size2D = new Size2D(100, 50);
-            button2.Text = "toast2_1 Show";
+            button2.Position = new Position(700, 600);
+            button2.Size = new Size(100, 50);
+            button2.Style.Text.Text = "toast2_1 Show";
             root.Add(button2);
             button2.Focusable = true;
             button2.ClickEvent += toast2_1Show;

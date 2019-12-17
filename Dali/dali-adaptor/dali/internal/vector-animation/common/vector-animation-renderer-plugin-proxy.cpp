@@ -110,6 +110,14 @@ bool VectorAnimationRendererPluginProxy::Initialize( const std::string& url )
   return false;
 }
 
+void VectorAnimationRendererPluginProxy::Finalize()
+{
+  if( mPlugin )
+  {
+    mPlugin->Finalize();
+  }
+}
+
 void VectorAnimationRendererPluginProxy::SetRenderer( Dali::Renderer renderer )
 {
   if( mPlugin )
@@ -158,6 +166,14 @@ void VectorAnimationRendererPluginProxy::GetDefaultSize( uint32_t& width, uint32
   if( mPlugin )
   {
     mPlugin->GetDefaultSize( width, height );
+  }
+}
+
+void VectorAnimationRendererPluginProxy::GetLayerInfo( Property::Map& map ) const
+{
+  if( mPlugin )
+  {
+    mPlugin->GetLayerInfo( map );
   }
 }
 

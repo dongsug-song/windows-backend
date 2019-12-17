@@ -1,5 +1,5 @@
 ﻿using Tizen.NUI.Components;
-using Tizen.NUI;
+using Tizen.NUI.BaseComponents;
 
 namespace Tizen.NUI.Samples
 {
@@ -21,20 +21,26 @@ namespace Tizen.NUI.Samples
             pagination1.Size2D = new Size2D(400, 30);
             pagination1.BackgroundColor = new Color(1.0f, 1.0f, 1.0f, 0.6f);
             pagination1.IndicatorSize = new Size(26, 26);
-            pagination1.IndicatorBackgroundURL = CommonResource.GetFHResourcePath() + "9. Controller/pagination_ic_nor.png";
-            pagination1.IndicatorSelectURL = CommonResource.GetFHResourcePath() + "9. Controller/pagination_ic_sel.png";
+            pagination1.IndicatorImageURL = new Selector<string>()
+            {
+                Normal = CommonResource.GetFHResourcePath() + "9. Controller/pagination_ic_nor.png",
+                Selected = CommonResource.GetFHResourcePath() + "9. Controller/pagination_ic_sel.png",
+            };
             pagination1.IndicatorSpacing = 8;
             pagination1.IndicatorCount = PAGE_COUNT;
             pagination1.SelectedIndex = 0;
             window.Add(pagination1);
 
             ///////////////////////////////////////////////Create by Attributes//////////////////////////////////////////////////////////
-            PaginationAttributes attrs = new PaginationAttributes();
-            attrs.IndicatorSize = new Size(15, 15);
-            attrs.IndicatorBackgroundURL = CommonResource.GetTVResourcePath() + "component/c_pagination/c_paganation_medium_dot_normal.png";
-            attrs.IndicatorSelectURL = CommonResource.GetTVResourcePath() + "component/c_pagination/c_paganation_medium_dot_focus.png";
-            attrs.IndicatorSpacing = 14;
-            pagination2 = new Pagination(attrs);
+            PaginationStyle style = new PaginationStyle();
+            style.IndicatorSize = new Size(15, 15);
+            style.IndicatorImageURL = new Selector<string>()
+            {
+                Normal = CommonResource.GetTVResourcePath() + "component/c_pagination/c_paganation_medium_dot_normal.png",
+                Selected = CommonResource.GetTVResourcePath() + "component/c_pagination/c_paganation_medium_dot_focus.png",
+            };
+            style.IndicatorSpacing = 14;
+            pagination2 = new Pagination(style);
             pagination2.Name = "Pagination2";
             pagination2.Position2D = new Position2D(500, 500);
             pagination2.Size2D = new Size2D(400, 30);
@@ -44,7 +50,6 @@ namespace Tizen.NUI.Samples
             window.Add(pagination2);
 
             window.KeyEvent += Window_KeyEvent;
-
         }
 
         private void Window_KeyEvent(object sender, Window.KeyEventArgs e)

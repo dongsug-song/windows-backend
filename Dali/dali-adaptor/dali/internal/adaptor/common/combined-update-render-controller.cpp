@@ -23,15 +23,15 @@
 #include <dali/integration-api/platform-abstraction.h>
 
 // INTERNAL INCLUDES
-#include <dali/integration-api/trigger-event-factory.h>
-#include <dali/internal/adaptor/common/combined-update-render-controller-debug.h>
-#include <dali/internal/system/common/environment-options.h>
-#include <dali/internal/system/common/time-service.h>
-#include <dali/internal/adaptor/common/adaptor-internal-services.h>
+#include <dali/integration-api/adaptor-framework/trigger-event-factory.h>
 #include <dali/devel-api/adaptor-framework/thread-settings.h>
+#include <dali/internal/adaptor/common/adaptor-internal-services.h>
+#include <dali/internal/adaptor/common/combined-update-render-controller-debug.h>
 #include <dali/internal/graphics/gles/egl-graphics.h>
 #include <dali/internal/graphics/gles/egl-implementation.h>
 #include <dali/internal/graphics/common/graphics-interface.h>
+#include <dali/internal/system/common/environment-options.h>
+#include <dali/internal/system/common/time-service.h>
 
 namespace Dali
 {
@@ -548,15 +548,17 @@ void CombinedUpdateRenderController::UpdateRenderThread()
     if( DALI_UNLIKELY( newSurface ) )
     {
       LOG_UPDATE_RENDER_TRACE_FMT( "Replacing Surface" );
-
       // This is designed for replacing pixmap surfaces, but should work for window as well
       // we need to delete the surface and renderable (pixmap / window)
       // Then create a new pixmap/window and new surface
       // If the new surface has a different display connection, then the context will be lost
-
       mAdaptorInterfaces.GetDisplayConnectionInterface().Initialize();
       newSurface->InitializeGraphics();
-      newSurface->ReplaceGraphicsSurface();
+      newSurface->MakeContextCurrent();
+      // TODO: ReplaceGraphicsSurface doesn't work, InitializeGraphics()
+      // already creates new surface window, the surface and the context.
+      // We probably don't need ReplaceGraphicsSurface at all.
+      // newSurface->ReplaceGraphicsSurface();
       SurfaceReplaced();
     }
 

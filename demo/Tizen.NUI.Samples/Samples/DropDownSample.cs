@@ -51,22 +51,22 @@ namespace Tizen.NUI.Samples
             dropDown = new DropDown();
             dropDown.Size2D = new Size2D(900, 108);
             dropDown.Position2D = new Position2D(50, 300);
-            dropDown.HeaderText = "TitleArea";
-            dropDown.HeaderTextColor = new Color(0, 0, 0, 1);
-            dropDown.HeaderTextPointSize = 28;
-            dropDown.HeaderTextFontFamily = "SamsungOneUI 500C";
-            dropDown.ButtonText = "DropDown Text";
-            dropDown.ButtonTextColor = new Color(0, 0, 0, 1);
-            dropDown.ButtonTextPointSize = 20;
-            dropDown.ButtonTextFontFamily = "SamsungOneUI 500";
-            dropDown.ButtonIconImageURL = CommonResource.GetFHResourcePath() + "6. List/list_ic_dropdown.png";
-            dropDown.ButtonIconSize = new Size(48, 48);
-            dropDown.LeftSpace = 56;
+            dropDown.Style.HeaderText.Text = "TitleArea";
+            dropDown.Style.HeaderText.TextColor = new Color(0, 0, 0, 1);
+            dropDown.Style.HeaderText.PointSize = 28;
+            dropDown.Style.HeaderText.FontFamily = "SamsungOneUI 500C";
+            dropDown.Style.Button.Text.Text = "DropDown Text";
+            dropDown.Style.Button.Text.TextColor = new Color(0, 0, 0, 1);
+            dropDown.Style.Button.Text.PointSize = 20;
+            dropDown.Style.Button.Text.FontFamily = "SamsungOneUI 500";
+            dropDown.Style.Button.Icon.ResourceUrl = CommonResource.GetFHResourcePath() + "6. List/list_ic_dropdown.png";
+            dropDown.Style.Button.Icon.Size = new Size(48, 48);
+            dropDown.Space.Start = 56;
             dropDown.SpaceBetweenButtonTextAndIcon = 8;
-            dropDown.ListBackgroundImageURL = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_bg.png";
-            dropDown.ListBackgroundImageBorder = new Rectangle(51, 51, 51, 51);
-            dropDown.ListLeftMargin = 20;
-            dropDown.ListTopMargin = 20;
+            dropDown.Style.ListBackgroundImage.ResourceUrl = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_bg.png";
+            dropDown.Style.ListBackgroundImage.Border = new Rectangle(51, 51, 51, 51);
+            dropDown.ListMargin.Start = 20;
+            dropDown.ListMargin.Top = 20;
             dropDown.BackgroundColor = new Color(1, 1, 1, 1);
             dropDown.ListSize = new Size(360, 500);
             dropDown.ListPadding = new Extents(4, 4, 4, 4);
@@ -74,9 +74,9 @@ namespace Tizen.NUI.Samples
 
             for (int i = 0; i < 8; i++)
             {
-                DropDown.DropDownItemData item = new DropDown.DropDownItemData();
+                DropDown.DropDownDataItem item = new DropDown.DropDownDataItem();
                 item.Size = new Size(360, 96);
-                item.BackgroundColorSelector = new ColorSelector
+                item.BackgroundColorSelector = new Selector<Color>
                 {
                     Pressed = new Color(0, 0, 0, 0.4f),
                     Other = new Color(1, 1, 1, 0),
@@ -87,7 +87,7 @@ namespace Tizen.NUI.Samples
                 item.TextPosition = new Position(28, 0);
                 item.CheckImageSize = new Size(40, 40);
                 item.CheckImageResourceUrl = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_checkbox_on.png";
-                item.CheckImageRightSpace = 16;
+                item.CheckImageGapToBoundary = 16;
                 dropDown.AddItem(item);
             }
 
@@ -96,7 +96,7 @@ namespace Tizen.NUI.Samples
 
             //DropDown.DropDownItemData insertItem = new DropDown.DropDownItemData();
             //insertItem.Size2D = new Size2D(360, 96);
-            //insertItem.BackgroundColorSelector = new ColorSelector
+            //insertItem.BackgroundColorSelector = new Selector<Color>
             //{
             //    Pressed = new Color(0, 0, 0, 0.4f),
             //    Other = new Color(1, 1, 1, 0),
@@ -105,7 +105,7 @@ namespace Tizen.NUI.Samples
             //insertItem.PointSize = 18;
             //insertItem.FontFamily = "SamsungOne 500";
             //insertItem.TextPosition2D = new Position2D(28, 0);
-            //insertItem.CheckImageSize2D = new Size2D(40, 40);
+            //insertItem.CheckImageSize = new Size2D(40, 40);
             //insertItem.CheckImageResourceUrl = CommonReosurce.GetFHResourcePath() + "10. Drop Down/dropdown_checkbox_on.png";
             //insertItem.CheckImageRightSpace = 16;
             //dropDown.InsertItem(insertItem, 1);
@@ -114,10 +114,10 @@ namespace Tizen.NUI.Samples
             scrollBar.Direction = ScrollBar.DirectionType.Vertical;
             scrollBar.Position2D = new Position2D(394, 2);
             scrollBar.Size2D = new Size2D(4, 446);
-            scrollBar.TrackColor = Color.Green;
-            scrollBar.ThumbSize = new Size(4, 30);
-            scrollBar.ThumbColor = Color.Yellow;
-            scrollBar.TrackImageURL = CommonResource.GetTVResourcePath() + "component/c_progressbar/c_progressbar_white_buffering.png";
+            scrollBar.Style.Track.BackgroundColor = Color.Green;
+            scrollBar.Style.Thumb.Size = new Size(4, 30);
+            scrollBar.Style.Thumb.BackgroundColor = Color.Yellow;
+            scrollBar.Style.Track.ResourceUrl = CommonResource.GetTVResourcePath() + "component/c_progressbar/c_progressbar_white_buffering.png";
             dropDown.AttachScrollBar(scrollBar);
 
             #endregion
@@ -131,13 +131,13 @@ namespace Tizen.NUI.Samples
 
             #region CreateByAttributes
 
-            DropDownAttributes attrs = new DropDownAttributes
+            DropDownStyle attrs = new DropDownStyle
             {
-                HeaderTextAttributes = new TextAttributes
+                HeaderText= new TextLabelStyle
                 {
-                    Text = new StringSelector { All = "TitleArea" },
-                    PointSize = new FloatSelector { All = 28 },
-                    TextColor = new ColorSelector { All = new Color(0, 0, 0, 1) },
+                    Text = new Selector<string> { All = "TitleArea" },
+                    PointSize = new Selector<float?> { All = 28 },
+                    TextColor = new Selector<Color> { All = new Color(0, 0, 0, 1) },
                     FontFamily = "SamsungOneUI 500C",
                     PositionUsesPivotPoint = true,
                     ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
@@ -148,13 +148,13 @@ namespace Tizen.NUI.Samples
                     VerticalAlignment = VerticalAlignment.Center,
                 },
 
-                ButtonAttributes = new ButtonAttributes
+                Button = new ButtonStyle
                 {
-                    TextAttributes = new TextAttributes
+                    Text = new TextLabelStyle
                     {
-                        Text = new StringSelector { All = "DropDown Text" },
-                        PointSize = new FloatSelector { All = 20 },
-                        TextColor = new ColorSelector { All = new Color(0, 0, 0, 1) },
+                        Text = new Selector<string> { All = "DropDown Text" },
+                        PointSize = new Selector<float?> { All = 20 },
+                        TextColor = new Selector<Color> { All = new Color(0, 0, 0, 1) },
                         FontFamily = "SamsungOneUI 500",
                         PositionUsesPivotPoint = true,
                         ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
@@ -165,31 +165,31 @@ namespace Tizen.NUI.Samples
                         HorizontalAlignment = HorizontalAlignment.Begin,
                         VerticalAlignment = VerticalAlignment.Center,
                     },
-                    IconAttributes = new ImageAttributes
+                    Icon = new ImageViewStyle
                     {
                         Size = new Size(48, 48),
-                        ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "6. List/list_ic_dropdown.png" },
+                        ResourceUrl = new Selector<string> { All = CommonResource.GetFHResourcePath() + "6. List/list_ic_dropdown.png" },
                         PositionUsesPivotPoint = true,
                         ParentOrigin = Tizen.NUI.ParentOrigin.CenterRight,
                         PivotPoint = Tizen.NUI.PivotPoint.CenterRight,
                     },
                 },
-                ListBackgroundImageAttributes = new ImageAttributes
+                ListBackgroundImage= new ImageViewStyle
                 {
-                    ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_bg.png" },
-                    Border = new RectangleSelector { All = new Rectangle(51, 51, 51, 51) },
+                    ResourceUrl = new Selector<string> { All = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_bg.png" },
+                    Border = new Selector<Rectangle> { All = new Rectangle(51, 51, 51, 51) },
                     PositionUsesPivotPoint = true,
                     ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
                     PivotPoint = Tizen.NUI.PivotPoint.TopLeft,
                     WidthResizePolicy = ResizePolicyType.FitToChildren,
                     HeightResizePolicy = ResizePolicyType.FitToChildren,
                 },
-                Space = new Vector4(56, 0, 0, 0),
+                Space = new Extents(56, 0, 0, 0),
                 SpaceBetweenButtonTextAndIcon = 8,
-                ListMargin = new Vector4(20, 0, 20, 0),
-                BackgroundColor = new ColorSelector { All = new Color(1, 1, 1, 1) },
+                ListMargin = new Extents(20, 0, 20, 0),
+                BackgroundColor = new Selector<Color> { All = new Color(1, 1, 1, 1) },
                 ListSize = new Size(360, 500),
-                ListPadding = new Extents(4, 4, 4, 4),               
+                ListPadding = new Extents(4, 4, 4, 4),
             };
 
             dropDown2 = new DropDown(attrs);
@@ -197,30 +197,30 @@ namespace Tizen.NUI.Samples
             dropDown2.Position2D = new Position2D(1000, 300);
             root.Add(dropDown2);
 
-            DropDownItemAttributes itemAttrs = new DropDownItemAttributes
+            DropDownItemStyle itemAttrs = new DropDownItemStyle
             {
-                BackgroundColor = new ColorSelector
+                BackgroundColor = new Selector<Color>
                 {
                     Pressed = new Color(0, 0, 0, 0.4f),
                     Other = new Color(1, 1, 1, 0),
                 },
-                TextAttributes = new TextAttributes
+                Text= new TextLabelStyle
                 {
-                    PointSize = new FloatSelector { All = 18 },
+                    PointSize = new Selector<float?> { All = 18 },
                     FontFamily = "SamsungOne 500",
                     Position = new Position(28, 0),
                 },
-                CheckImageAttributes = new ImageAttributes
+                CheckImage= new ImageViewStyle
                 {
                     Size = new Size(40, 40),
-                    ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_checkbox_on.png" },
+                    ResourceUrl = new Selector<string> { All = CommonResource.GetFHResourcePath() + "10. Drop Down/dropdown_checkbox_on.png" },
                 },
-                CheckImageRightSpace = 16,
+                CheckImageGapToBoundary = 16,
             };
 
             for (int i = 0; i < 8; i++)
             {
-                DropDown.DropDownItemData item = new DropDown.DropDownItemData(itemAttrs);
+                DropDown.DropDownDataItem item = new DropDown.DropDownDataItem(itemAttrs);
                 item.Size = new Size(360, 96);
                 item.Text = "Normal list " + i;
                 dropDown2.AddItem(item);
@@ -232,10 +232,10 @@ namespace Tizen.NUI.Samples
             scrollBar2.Direction = ScrollBar.DirectionType.Vertical;
             scrollBar2.Position2D = new Position2D(394, 2);
             scrollBar2.Size2D = new Size2D(4, 446);
-            scrollBar2.TrackColor = Color.Green;
-            scrollBar2.ThumbSize = new Size(4, 30);
-            scrollBar2.ThumbColor = Color.Yellow;
-            scrollBar2.TrackImageURL = CommonResource.GetTVResourcePath() + "component/c_progressbar/c_progressbar_white_buffering.png";
+            scrollBar2.Style.Track.BackgroundColor = Color.Green;
+            scrollBar2.Style.Thumb.Size = new Size(4, 30);
+            scrollBar2.Style.Thumb.BackgroundColor = Color.Yellow;
+            scrollBar2.Style.Track.ResourceUrl = CommonResource.GetTVResourcePath() + "component/c_progressbar/c_progressbar_white_buffering.png";
             dropDown2.AttachScrollBar(scrollBar2);
 
             #endregion

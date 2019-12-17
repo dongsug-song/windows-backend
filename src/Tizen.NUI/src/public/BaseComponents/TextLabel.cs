@@ -34,6 +34,21 @@ namespace Tizen.NUI.BaseComponents
     {
         /// This will be public opened in tizen_5.0 after ACR done. Before ACR, need to be hidden as inhouse API.
         [EditorBrowsable(EditorBrowsableState.Never)]
+        public static readonly BindableProperty TranslatableTextProperty = BindableProperty.Create(nameof(TranslatableText), typeof(string), typeof(TextLabel), string.Empty, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            if (newValue != null)
+            {
+                textLabel.translatableText = (string)newValue;
+            }
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            return textLabel.translatableText;
+        });
+        /// This will be public opened in tizen_5.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(TextLabel), string.Empty, propertyChanged: (bindable, oldValue, newValue) =>
         {
             var textLabel = (TextLabel)bindable;
@@ -527,6 +542,22 @@ namespace Tizen.NUI.BaseComponents
         private string textLabelSid = null;
         private bool systemlangTextFlag = false;
 
+        private TextLabelStyle textLabelStyle;
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public TextLabelStyle TextLabelStyle
+        {
+            get
+            {
+                if (null == textLabelStyle)
+                {
+                    textLabelStyle = ViewStyle as TextLabelStyle;
+                }
+
+                return textLabelStyle;
+            }
+        }
+
         /// <summary>
         /// Creates the TextLabel control.
         /// </summary>
@@ -534,6 +565,13 @@ namespace Tizen.NUI.BaseComponents
         public TextLabel() : this(Interop.TextLabel.TextLabel_New__SWIG_0(), true)
         {
             if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+        }
+
+        /// This will be public opened in next release of tizen after ACR done. Before ACR, it is used as HiddenAPI (InhouseAPI).
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public TextLabel(TextLabelStyle viewStyle) : this(Interop.TextLabel.TextLabel_New__SWIG_0(), true)
+        {
+            int temp = 0;
         }
 
         /// <summary>
@@ -603,6 +641,18 @@ namespace Tizen.NUI.BaseComponents
         {
             get
             {
+                return (string)GetValue(TranslatableTextProperty);
+            }
+            set
+            {
+                SetValue(TranslatableTextProperty, value);
+            }
+        }
+        private string translatableText
+        {
+            get
+            {
+                string temp = (string)GetValue(TranslatableTextProperty);
                 return textLabelSid;
             }
             set
@@ -763,12 +813,16 @@ namespace Tizen.NUI.BaseComponents
         /// Animation framework can be used to change the color of the text when not using mark up.<br />
         /// Cannot animate the color when text is auto scrolling.<br />
         /// </summary>
+        /// <remarks>
+        /// The property cascade chaining set is possible. For example, this (textLabel.TextColor.X = 0.1f;) is possible.
+        /// </remarks>
         /// <since_tizen> 3 </since_tizen>
         public Color TextColor
         {
             get
             {
-                return (Color)GetValue(TextColorProperty);
+                Color temp = (Color)GetValue(TextColorProperty);
+                return new Color(OnTextColorChanged, temp.R, temp.G, temp.B, temp.A);
             }
             set
             {
@@ -784,6 +838,7 @@ namespace Tizen.NUI.BaseComponents
         /// <since_tizen> 3 </since_tizen>
         /// <remarks>
         /// Deprecated.(API Level 6) Use Shadow instead.
+        /// The property cascade chaining set is possible. For example, this (textLabel.ShadowOffset.X = 0.1f;) is possible.
         /// </remarks>
         [Obsolete("Please do not use this ShadowOffset(Deprecated). Please use Shadow instead.")]
         public Vector2 ShadowOffset
@@ -792,7 +847,7 @@ namespace Tizen.NUI.BaseComponents
             {
                 Vector2 shadowOffset = new Vector2();
                 Shadow.Find(TextLabel.Property.SHADOW, "offset")?.Get(shadowOffset);
-                return shadowOffset;
+                return new Vector2(OnShadowOffsetChanged, shadowOffset.X, shadowOffset.Y);
             }
             set
             {
@@ -814,6 +869,7 @@ namespace Tizen.NUI.BaseComponents
         /// <since_tizen> 3 </since_tizen>
         /// <remarks>
         /// Deprecated.(API Level 6) Use Shadow instead.
+        /// The property cascade chaining set is possible. For example, this (textLabel.ShadowColor.X = 0.1f;) is possible.
         /// </remarks>
         [Obsolete("Please do not use this ShadowColor(Deprecated). Please use Shadow instead.")]
         public Vector4 ShadowColor
@@ -822,7 +878,7 @@ namespace Tizen.NUI.BaseComponents
             {
                 Vector4 shadowColor = new Vector4();
                 Shadow.Find(TextLabel.Property.SHADOW, "color")?.Get(shadowColor);
-                return shadowColor;
+                return new Vector4(OnShadowColorChanged, shadowColor.X, shadowColor.Y, shadowColor.Z, shadowColor.W);
             }
             set
             {
@@ -875,6 +931,7 @@ namespace Tizen.NUI.BaseComponents
         /// <since_tizen> 3 </since_tizen>
         /// <remarks>
         /// Deprecated.(API Level 6) Use Underline instead.
+        /// The property cascade chaining set is possible. For example, this (textLabel.UnderlineColor.X = 0.1f;) is possible.
         /// </remarks>
         [Obsolete("Please do not use this UnderlineColor(Deprecated). Please use Underline instead.")]
         public Vector4 UnderlineColor
@@ -883,7 +940,7 @@ namespace Tizen.NUI.BaseComponents
             {
                 Vector4 underlineColor = new Vector4();
                 Underline.Find(TextLabel.Property.UNDERLINE, "color")?.Get(underlineColor);
-                return underlineColor;
+                return new Vector4(OnUnderlineColorChanged, underlineColor.X, underlineColor.Y, underlineColor.Z, underlineColor.W);
             }
             set
             {
@@ -1343,6 +1400,134 @@ namespace Tizen.NUI.BaseComponents
         }
 
         /// <summary>
+        /// Get attribues, it is abstract function and must be override.
+        /// </summary>
+        /// <since_tizen> 6 </since_tizen>
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected override ViewStyle GetAttributes()
+        {
+            textLabelStyle = new TextLabelStyle();
+            return textLabelStyle;
+        }
+
+        internal static readonly BindableProperty TranslatableTextSelectorProperty = BindableProperty.Create("TranslatableTextSelector", typeof(Selector<string>), typeof(TextLabel), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            textLabel.TranslatableTextSelector.Clone((Selector<string>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            return textLabel.TranslatableTextSelector;
+        });
+        internal static readonly BindableProperty TextSelectorProperty = BindableProperty.Create("TextSelector", typeof(Selector<string>), typeof(TextLabel), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            textLabel.textSelector.Clone((Selector<string>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            return textLabel.textSelector;
+        });
+        internal static readonly BindableProperty FontFamilySelectorProperty = BindableProperty.Create("FontFamilySelector", typeof(Selector<string>), typeof(TextLabel), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            textLabel.fontFamilySelector.Clone((Selector<string>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            return textLabel.fontFamilySelector;
+        });
+        internal static readonly BindableProperty PointSizeSelectorProperty = BindableProperty.Create("PointSizeSelector", typeof(Selector<float?>), typeof(TextLabel), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            textLabel.pointSizeSelector.Clone((Selector<float?>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            return textLabel.pointSizeSelector;
+        });
+        internal static readonly BindableProperty TextColorSelectorProperty = BindableProperty.Create("TextColorSelector", typeof(Selector<Color>), typeof(TextLabel), null, propertyChanged: (bindable, oldValue, newValue) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            textLabel.textColorSelector.Clone((Selector<Color>)newValue);
+        },
+        defaultValueCreator: (bindable) =>
+        {
+            var textLabel = (TextLabel)bindable;
+            return textLabel.textColorSelector;
+        });
+
+        private TriggerableSelector<string> translatableTextSelector;
+        private TriggerableSelector<string> TranslatableTextSelector
+        {
+            get
+            {
+                if (null == translatableTextSelector)
+                {
+                    translatableTextSelector = new TriggerableSelector<string>(this, TranslatableTextProperty);
+                }
+                return translatableTextSelector;
+            }
+        }
+
+        private TriggerableSelector<string> _textSelector;
+        private TriggerableSelector<string> textSelector
+        {
+            get
+            {
+                if (null == _textSelector)
+                {
+                    _textSelector = new TriggerableSelector<string>(this, TextProperty);
+                }
+                return _textSelector;
+            }
+        }
+
+        private TriggerableSelector<string> _fontFamilySelector;
+        private TriggerableSelector<string> fontFamilySelector
+        {
+            get
+            {
+                if (null == _fontFamilySelector)
+                {
+                    _fontFamilySelector = new TriggerableSelector<string>(this, FontFamilyProperty);
+                }
+                return _fontFamilySelector;
+            }
+        }
+
+        private TriggerableSelector<Color> _textColorSelector;
+        private TriggerableSelector<Color> textColorSelector
+        {
+            get
+            {
+                if (null == _textColorSelector)
+                {
+                    _textColorSelector = new TriggerableSelector<Color>(this, TextColorProperty);
+                }
+                return _textColorSelector;
+            }
+        }
+
+        private TriggerableSelector<float?> _pointSizeSelector;
+        private TriggerableSelector<float?> pointSizeSelector
+        {
+            get
+            {
+                if (null == _pointSizeSelector)
+                {
+                    _pointSizeSelector = new TriggerableSelector<float?>(this, PointSizeProperty);
+                }
+                return _pointSizeSelector;
+            }
+        }
+
+        /// <summary>
         /// Invoked whenever the binding context of the textlabel changes. Implement this method to add class handling for this event.
         /// </summary>
         protected override void OnBindingContextChanged()
@@ -1393,5 +1578,23 @@ namespace Tizen.NUI.BaseComponents
             internal static readonly int MATCH_SYSTEM_LANGUAGE_DIRECTION = Interop.TextLabel.TextLabel_Property_MATCH_SYSTEM_LANGUAGE_DIRECTION_get();
             internal static readonly int TEXT_FIT = Interop.TextLabel.TextLabel_Property_TEXT_FIT_get();
         }
+
+        private void OnShadowColorChanged(float x, float y, float z, float w)
+        {
+            ShadowColor = new Vector4(x, y, z, w);
+        }
+        private void OnShadowOffsetChanged(float x, float y)
+        {
+            ShadowOffset = new Vector2(x, y);
+        }
+        private void OnTextColorChanged(float r, float g, float b, float a)
+        {
+            TextColor = new Color(r, g, b, a);
+        }
+        private void OnUnderlineColorChanged(float x, float y, float z, float w)
+        {
+            UnderlineColor = new Vector4(x, y, z, w);
+        }
+
     }
 }

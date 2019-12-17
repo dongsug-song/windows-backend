@@ -16,6 +16,11 @@ namespace Tizen.NUI.Samples
         {
             return @"../../../demo/csharp-demo/res/images/VD/";
         }
+
+        internal static string GetDaliResourcePath()
+        {
+            return @"../../../demo/csharp-demo/res/images/Dali/";
+        }
     }
 
     public class SampleMain : NUIApplication, IExample

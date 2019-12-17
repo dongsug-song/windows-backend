@@ -51,46 +51,44 @@ namespace Tizen.NUI.Samples
 
             popup = new Popup();
             popup.MinimumSize = new Size2D(1032, 184);
-            popup.Size2D = new Size2D(1032, 400);
-            popup.Position2D = new Position2D(200, 100);
+            popup.Size = new Size(1032, 400);
+            popup.Position = new Position(200, 100);
 
-            popup.TitlePointSize = 25;
-            popup.TitleTextColor = Color.Black;
-            popup.TitleHeight = 68;
-            popup.TitleTextHorizontalAlignment = HorizontalAlignment.Begin;
-            popup.TitleTextPosition = new Position(64, 52);
-            popup.TitleText = "Popup Title";
+            popup.Style.Title.PointSize = 25;
+            popup.Style.Title.TextColor = Color.Green;
+            popup.Style.Title.SizeHeight = 68;
+            popup.Style.Title.HorizontalAlignment = HorizontalAlignment.Begin;
+            popup.Style.Title.Position = new Position(64, 52);
+            popup.Style.Title.Text = "Popup Title";
 
-            popup.ShadowImageURL = CommonResource.GetFHResourcePath() + "11. Popup/popup_background_shadow.png";
-            popup.ShadowImageBorder = new Rectangle(0, 0, 105, 105);
-            popup.ShadowOffset = new Vector4(24, 24, 24, 24);
-            popup.BackgroundImageURL = CommonResource.GetFHResourcePath() + "11. Popup/popup_background.png";
-            popup.BackgroundImageBorder = new Rectangle(0, 0, 81, 81);
+            popup.ShadowImage = CommonResource.GetFHResourcePath() + "11. Popup/popup_background_shadow.png";
+            popup.ShadowBorder = new Rectangle(0, 0, 105, 105);
+            popup.BackgroundImage = CommonResource.GetFHResourcePath() + "11. Popup/popup_background.png";
+            popup.BackgroundBorder = new Rectangle(0, 0, 81, 81);
 
-            popup.ButtonBackgroundImageURL = CommonResource.GetFHResourcePath() + "3. Button/rectangle_btn_normal.png";
-            popup.ButtonBackgroundImageBorder = new Rectangle(5, 5, 5, 5);
-            popup.ButtonOverLayBackgroundColorSelector = new ColorSelector
+            popup.AddButton("Yes");
+            popup.AddButton("Exit");
+            popup.ButtonBackground = CommonResource.GetFHResourcePath() + "3. Button/rectangle_btn_normal.png";
+            popup.ButtonBackgroundBorder = new Rectangle(5, 5, 5, 5);
+            popup.ButtonOverLayBackgroundColorSelector = new Selector<Color>
             {
                 Normal = new Color(1.0f, 1.0f, 1.0f, 1.0f),
                 Pressed = new Color(0.0f, 0.0f, 0.0f, 0.1f),
                 Selected = new Color(1.0f, 1.0f, 1.0f, 1.0f),
             };
-            popup.ButtonTextColor = color[index];
+            popup.ButtonTextColor = color[1];
             popup.ButtonHeight = 132;
-            popup.ButtonCount = 2;
-            popup.SetButtonText(0, "Yes");
-            popup.SetButtonText(1, "Exit");
             popup.PopupButtonClickEvent += PopupButtonClickedEvent;
             popup.LayoutDirectionChanged += PopupLayoutDirectionChanged;
-
-            root.Add(popup);
+            popup.Post(window);
 
             contentText = new TextLabel();
             contentText.Size2D = new Size2D(904, 100);
             contentText.PointSize = 20;
             contentText.HorizontalAlignment = HorizontalAlignment.Begin;
             contentText.VerticalAlignment = VerticalAlignment.Center;
-            contentText.Text = "Popup ButtonStyle is " + buttonStyles[index];          
+            contentText.Text = "Popup ButtonStyle is " + buttonStyles[index];
+            contentText.TextColor = new Color(0,0,222,1);
             popup.ContentView.Add(contentText);
 
             ///////////////////////////////////////////////Create by Attributes//////////////////////////////////////////////////////////
@@ -100,14 +98,14 @@ namespace Tizen.NUI.Samples
             createText[1].Position2D = new Position2D(500, 550);
             root.Add(createText[1]);
 
-            PopupAttributes attrs = new PopupAttributes
+            PopupStyle attrs = new PopupStyle
             {
                 MinimumSize = new Size2D(1032, 184),
                 ShadowOffset = new Vector4(24, 24, 24, 24),
-                TitleTextAttributes = new TextAttributes
+                Title = new TextLabelStyle
                 {
-                    PointSize = new FloatSelector { All = 25 },
-                    TextColor = new ColorSelector { All = Color.Black },
+                    PointSize = new Selector<float?> { All = 25 },
+                    TextColor = new Selector<Color> { All = Color.Black },
                     Size = new Size(0, 68),
                     PositionUsesPivotPoint = true,
                     ParentOrigin = Tizen.NUI.ParentOrigin.TopLeft,
@@ -115,77 +113,63 @@ namespace Tizen.NUI.Samples
                     HorizontalAlignment = HorizontalAlignment.Begin,
                     VerticalAlignment = VerticalAlignment.Bottom,
                     Position = new Position(64, 52),
-                    Text = new StringSelector { All = "Popup Title" },
+                    Text = new Selector<string> { All = "Popup Title" },
                 },
-                ShadowImageAttributes = new ImageAttributes
-                {
-                    PositionUsesPivotPoint = true,
-                    ParentOrigin = Tizen.NUI.ParentOrigin.Center,
-                    PivotPoint = Tizen.NUI.PivotPoint.Center,
-                    ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "11. Popup/popup_background_shadow.png" },
-                    Border = new RectangleSelector { All = new Rectangle(0, 0, 105, 105) },
-                },
-                BackgroundImageAttributes = new ImageAttributes
-                {
-                    PositionUsesPivotPoint = true,
-                    ParentOrigin = Tizen.NUI.ParentOrigin.Center,
-                    PivotPoint = Tizen.NUI.PivotPoint.Center,
-                    WidthResizePolicy = ResizePolicyType.FillToParent,
-                    HeightResizePolicy = ResizePolicyType.FillToParent,
-                    ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "11. Popup/popup_background.png" },
-                    Border = new RectangleSelector { All = new Rectangle(0, 0, 81, 81) },
-                },
-                ButtonAttributes = new ButtonAttributes
+                Buttons = new ButtonStyle
                 {
                     Size = new Size(0, 132),
                     PositionUsesPivotPoint = true,
                     ParentOrigin = Tizen.NUI.ParentOrigin.BottomLeft,
                     PivotPoint = Tizen.NUI.PivotPoint.BottomLeft,
-                    BackgroundImageAttributes = new ImageAttributes
+                    Background = new ImageViewStyle
                     {
                         PositionUsesPivotPoint = true,
                         ParentOrigin = Tizen.NUI.ParentOrigin.Center,
                         PivotPoint = Tizen.NUI.PivotPoint.Center,
                         WidthResizePolicy = ResizePolicyType.FillToParent,
                         HeightResizePolicy = ResizePolicyType.FillToParent,
-                        ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "3. Button/rectangle_btn_normal.png" },
-                        Border = new RectangleSelector { All = new Rectangle(5, 5, 5, 5) },
+                        ResourceUrl = new Selector<string> { All = CommonResource.GetFHResourcePath() + "3. Button/rectangle_btn_normal.png" },
+                        Border = new Selector<Rectangle> { All = new Rectangle(5, 5, 5, 5) },
                     },
-                    OverlayImageAttributes = new ImageAttributes
+                    Overlay = new ImageViewStyle
                     {
                         PositionUsesPivotPoint = true,
                         ParentOrigin = Tizen.NUI.ParentOrigin.Center,
                         PivotPoint = Tizen.NUI.PivotPoint.Center,
                         WidthResizePolicy = ResizePolicyType.FillToParent,
                         HeightResizePolicy = ResizePolicyType.FillToParent,
-                        BackgroundColor = new ColorSelector
-                        {
-                            Normal = new Color(1.0f, 1.0f, 1.0f, 1.0f),
-                            Pressed = new Color(0.0f, 0.0f, 0.0f, 0.1f),
-                            Selected = new Color(1.0f, 1.0f, 1.0f, 1.0f),
-                        },
+                        //BackgroundColor = new Selector<Color>
+                        //{
+                        //    Normal = new Color(1.0f, 1.0f, 1.0f, 1.0f),
+                        //    Pressed = new Color(0.0f, 0.0f, 0.0f, 0.1f),
+                        //    Selected = new Color(1.0f, 1.0f, 1.0f, 1.0f),
+                        //},
                     },
-                    TextAttributes = new TextAttributes
+                    Text = new TextLabelStyle
                     {
                         PositionUsesPivotPoint = true,
                         ParentOrigin = Tizen.NUI.ParentOrigin.Center,
                         PivotPoint = Tizen.NUI.PivotPoint.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
-                        TextColor = new ColorSelector { All = color[index2] },
+                        TextColor = new Selector<Color> { All = color[index2] },
                     },
                 },
             };
 
             popup2 = new Popup(attrs);
-            popup2.Size2D = new Size2D(1032, 400);
-            popup2.Position2D = new Position2D(200, 600);
-            popup2.ButtonCount = 2;
-            popup2.SetButtonText(0, "Yes");
-            popup2.SetButtonText(1, "Exit");
+            popup2.Size = new Size(1032, 400);
+            popup2.Position = new Position(200, 600);
+            popup2.ButtonHeight = 132;
+            popup2.AddButton("Yes");
+            popup2.AddButton("Exit");
             popup2.PopupButtonClickEvent += PopupButtonClickedEvent;
             popup2.LayoutDirectionChanged += Popup2LayoutDirectionChanged;
-            root.Add(popup2);
+            popup2.ShadowImage = CommonResource.GetFHResourcePath() + "11. Popup/popup_background_shadow.png";
+            popup2.ShadowBorder = new Rectangle(0, 0, 105, 105);
+            popup2.BackgroundImage = CommonResource.GetFHResourcePath() + "11. Popup/popup_background.png";
+            popup2.BackgroundBorder = new Rectangle(0, 0, 81, 81);
+            popup2.Post(window);
 
             contentText2 = new TextLabel();
             contentText2.Size2D = new Size2D(904, 100);
@@ -196,11 +180,11 @@ namespace Tizen.NUI.Samples
             popup2.ContentView.Add(contentText2);
 
             button = new Button();
-            button.BackgroundImageURL = CommonResource.GetTVResourcePath() + "component/c_buttonbasic/c_basic_button_white_bg_normal_9patch.png";
-            button.BackgroundImageBorder = new Rectangle(4, 4, 5, 5);
+            button.Style.Background.ResourceUrl = CommonResource.GetTVResourcePath() + "component/c_buttonbasic/c_basic_button_white_bg_normal_9patch.png";
+            button.Style.Background.Border = new Rectangle(4, 4, 5, 5);
             button.Size2D = new Size2D(580, 80);
             button.Position2D = new Position2D(1300, 500);
-            button.Text = "LayoutDirection is left to right";
+            button.Style.Text.Text = "LayoutDirection is left to right";
             button.ClickEvent += ButtonClickEvent;
             root.Add(button);
         }
@@ -257,13 +241,13 @@ namespace Tizen.NUI.Samples
             {
                 popup.LayoutDirection = ViewLayoutDirectionType.RTL;
                 popup2.LayoutDirection = ViewLayoutDirectionType.RTL;
-                button.Text = "LayoutDirection is right to left";
+                button.Style.Text.Text = "LayoutDirection is right to left";
             }
             else
             {
                 popup.LayoutDirection = ViewLayoutDirectionType.LTR;
                 popup2.LayoutDirection = ViewLayoutDirectionType.LTR;
-                button.Text = "LayoutDirection is left to right";
+                button.Style.Text.Text = "LayoutDirection is left to right";
             }           
         }
 

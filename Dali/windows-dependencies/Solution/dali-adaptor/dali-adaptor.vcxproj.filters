@@ -559,12 +559,6 @@
     <ClCompile Include="..\..\..\dali-adaptor\dali\devel-api\adaptor-framework\key-devel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\scene-holder-impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\scene-holder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\dali-adaptor\dali\internal\adaptor-framework\generic\file-loader-impl-generic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -575,6 +569,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\dali-adaptor\dali\internal\graphics\gles\egl-context-helper-implementation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\adaptor-framework\scene-holder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dali-adaptor\dali\integration-api\adaptor-framework\scene-holder-impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -59,6 +59,11 @@ VectorAnimationRenderer& VectorAnimationRenderer::operator=( const VectorAnimati
   return *this;
 }
 
+void VectorAnimationRenderer::Finalize()
+{
+  GetImplementation( *this ).Finalize();
+}
+
 void VectorAnimationRenderer::SetRenderer( Renderer renderer )
 {
   GetImplementation( *this ).SetRenderer( renderer );
@@ -87,6 +92,11 @@ float VectorAnimationRenderer::GetFrameRate() const
 void VectorAnimationRenderer::GetDefaultSize( uint32_t& width, uint32_t& height ) const
 {
   GetImplementation( *this ).GetDefaultSize( width, height );
+}
+
+void VectorAnimationRenderer::GetLayerInfo( Property::Map& map ) const
+{
+  GetImplementation( *this ).GetLayerInfo( map );
 }
 
 VectorAnimationRenderer::UploadCompletedSignalType& VectorAnimationRenderer::UploadCompletedSignal()

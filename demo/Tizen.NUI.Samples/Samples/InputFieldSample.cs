@@ -10,7 +10,7 @@ namespace Tizen.NUI.Samples
         private TextLabel guideText;
         private View rootView;
         InputField inputField;
-        InputFieldAttributes inputFieldAttrs;
+        InputFieldStyle inputFieldAttrs;
 
         public void Activate()
         {
@@ -49,30 +49,30 @@ namespace Tizen.NUI.Samples
 
         private void CreateInputField()
         {
-            inputFieldAttrs = new InputFieldAttributes();
+            inputFieldAttrs = new InputFieldStyle();
             inputFieldAttrs.Space = 24;
-            inputFieldAttrs.BackgroundImageAttributes = new ImageAttributes
+            inputFieldAttrs.BackgroundImageAttributes = new ImageViewStyle
             {
-                ResourceURL = new StringSelector { All = CommonResource.GetFHResourcePath() + "1. Action bar/search_bg.png" },
-                Border = new RectangleSelector { All = new Rectangle(45, 45, 0, 0) }
+                ResourceUrl = new Selector<string> { All = CommonResource.GetFHResourcePath() + "1. Action bar/search_bg.png" },
+                Border = new Selector<Rectangle> { All = new Rectangle(45, 45, 0, 0) }
             };
 
-            inputFieldAttrs.InputBoxAttributes = new TextFieldAttributes
+            inputFieldAttrs.InputBoxAttributes = new TextFieldStyle
             {
-                TextColor = new ColorSelector
+                TextColor = new Selector<Color>
                 {
                     Normal = new Color(0, 0, 0, 1),
                     Pressed = new Color(0, 0, 0, 1),
                     Disabled = new Color(0, 0, 0, 0.4f)
                 },
-                PlaceholderTextColor = new ColorSelector
+                PlaceholderTextColor = new Selector<Color>
                 {
                     All = new Color(0, 0, 0, 0.4f)
                 },
                 HorizontalAlignment =  HorizontalAlignment.Begin,
                 VerticalAlignment =  VerticalAlignment.Center,
                 FontFamily = "SamsungOne 500",
-                PointSize = new FloatSelector
+                PointSize = new Selector<float?>
                 {
                     All = 38
                 },

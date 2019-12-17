@@ -53,12 +53,16 @@ namespace Tizen.NUI.Samples
             tab.Size2D = new Size2D(700, 108);
             tab.Position2D = new Position2D(100, 300);
             tab.BackgroundColor = new Color(1.0f, 1.0f, 1.0f, 0.5f);
-            tab.ItemSpace = 40;
-            tab.Space = new Extents(56, 56, 1, 0);
-            tab.UnderLineSize = new Size(1, 3);
-            tab.UnderLineBackgroundColor = color[0];
-            tab.PointSize = 25;
-            tab.TextColorSelector = new ColorSelector
+            //tab.IsNatureTextWidth = true;
+            //tab.ItemGap = 40;
+            //tab.LeftSpace = 56;
+            //tab.RightSpace = 56;
+            //tab.TopSpace = 1;
+            //tab.BottomSpace = 0;
+            tab.Style.UnderLine.Size = new Size(1, 3);
+            tab.Style.UnderLine.BackgroundColor = color[0];
+            tab.Style.Text.PointSize = 25;
+            tab.Style.Text.TextColor = new Selector<Color>
             {
                 Normal = Color.Black,
                 Selected = color[0],
@@ -86,21 +90,22 @@ namespace Tizen.NUI.Samples
             createText[1].MultiLine = true;
             root.Add(createText[1]);
 
-            TabAttributes attrs = new TabAttributes
+            TabStyle attrs = new TabStyle
             {
-                Space = new Vector4(56, 56, 1, 0),
-                UnderLineAttributes = new ViewAttributes
+                //IsNatureTextWidth = false,
+                ItemPadding = new Extents(56, 56, 1, 0),
+                UnderLine = new ViewStyle
                 {
                     Size = new Size(1, 3),
                     PositionUsesPivotPoint = true,
                     ParentOrigin = Tizen.NUI.ParentOrigin.BottomLeft,
                     PivotPoint = Tizen.NUI.PivotPoint.BottomLeft,
-                    BackgroundColor = new ColorSelector { All = color[0]},
+                    BackgroundColor = new Selector<Color> { All = color[0]},
                 },
-                TextAttributes = new TextAttributes
+                Text = new TextLabelStyle
                 {
-                    PointSize = new FloatSelector { All = 25 },
-                    TextColor = new ColorSelector
+                    PointSize = new Selector<float?> { All = 25 },
+                    TextColor = new Selector<Color>
                     {
                         Normal = Color.Black,
                         Selected = color[0],
@@ -124,20 +129,20 @@ namespace Tizen.NUI.Samples
             tab2.SelectedItemIndex = 0;
 
             button = new Button();
-            button.BackgroundImageURL = CommonResource.GetTVResourcePath() + "component/c_buttonbasic/c_basic_button_white_bg_normal_9patch.png";
-            button.BackgroundImageBorder = new Rectangle(4, 4, 5, 5);
+            button.Style.Background.ResourceUrl = CommonResource.GetTVResourcePath() + "component/c_buttonbasic/c_basic_button_white_bg_normal_9patch.png";
+            button.Style.Background.Border = new Rectangle(4, 4, 5, 5);
             button.Size2D = new Size2D(280, 80);
             button.Position2D = new Position2D(400, 700);
-            button.Text = mode[index];
+            button.Style.Text.Text = mode[index];
             button.ClickEvent += ButtonClickEvent;
             root.Add(button);
 
             button2 = new Button();
-            button2.BackgroundImageURL = CommonResource.GetTVResourcePath() + "component/c_buttonbasic/c_basic_button_white_bg_normal_9patch.png";
-            button2.BackgroundImageBorder = new Rectangle(4, 4, 5, 5);
+            button2.Style.Background.ResourceUrl = CommonResource.GetTVResourcePath() + "component/c_buttonbasic/c_basic_button_white_bg_normal_9patch.png";
+            button2.Style.Background.Border = new Rectangle(4, 4, 5, 5);
             button2.Size2D = new Size2D(580, 80);
             button2.Position2D = new Position2D(250, 500);
-            button2.Text = "LayoutDirection is left to right";
+            button2.Style.Text.Text = "LayoutDirection is left to right";
             button2.ClickEvent += ButtonClickEvent2;
             root.Add(button2);
         }
@@ -205,15 +210,15 @@ namespace Tizen.NUI.Samples
         private void ButtonClickEvent(object sender, Button.ClickEventArgs e)
         {
             index = (index + 1) % 4;
-            button.Text = mode[index];
-            tab.UnderLineBackgroundColor = color[index];
-            tab.TextColorSelector = new ColorSelector
+            button.Style.Text.Text = mode[index];
+            tab.Style.UnderLine.BackgroundColor = color[index];
+            tab.Style.Text.TextColor = new Selector<Color>
             {
                 Normal = Color.Black,
                 Selected = color[index],
             };
-            tab2.UnderLineBackgroundColor = color[index];
-            tab2.TextColorSelector = new ColorSelector
+            tab2.Style.UnderLine.BackgroundColor = color[index];
+            tab2.Style.Text.TextColor = new Selector<Color>
             {
                 Normal = Color.Black,
                 Selected = color[index],
@@ -226,13 +231,13 @@ namespace Tizen.NUI.Samples
             {
                 tab.LayoutDirection = ViewLayoutDirectionType.RTL;
                 tab2.LayoutDirection = ViewLayoutDirectionType.RTL;
-                button2.Text = "LayoutDirection is right to left";
+                button2.Style.Text.Text = "LayoutDirection is right to left";
             }
             else
             {
                 tab.LayoutDirection = ViewLayoutDirectionType.LTR;
                 tab2.LayoutDirection = ViewLayoutDirectionType.LTR;
-                button2.Text = "LayoutDirection is left to right";
+                button2.Style.Text.Text = "LayoutDirection is left to right";
             }
         }
     }

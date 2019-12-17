@@ -17,13 +17,8 @@
 
 // INTERNAL INCLUDES
 #include <dali/devel-api/adaptor-framework/application-devel.h>
+#include <dali/integration-api/adaptor-framework/scene-holder.h>
 #include <dali/internal/adaptor/common/application-impl.h>
-
-#ifdef DALI_ADAPTOR_COMPILATION
-#include <dali/integration-api/scene-holder.h>
-#else
-#include <dali/integration-api/adaptors/scene-holder.h>
-#endif
 
 namespace Dali
 {
@@ -40,6 +35,11 @@ bool AddIdleWithReturnValue( Application application, CallbackBase* callback )
 std::string GetDataPath()
 {
   return Internal::Adaptor::Application::GetDataPath();
+}
+
+Application DownCast( Dali::RefObject* refObject )
+{
+  return Application( dynamic_cast<Dali::Internal::Adaptor::Application*>( refObject ) );
 }
 
 } // namespace DevelApplication

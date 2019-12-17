@@ -50,6 +50,78 @@ namespace Tizen.NUI.Binding
         [EditorBrowsable(EditorBrowsableState.Never)]
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// This will be public opened in tizen_6.0 after ACR done. Before ACR, need to be hidden as inhouse API.
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual void CopyFrom(BindableObject that)
+        {
+            if (null != that)
+            {
+                Dictionary<string, BindableProperty> nameToBindableProperty1;
+                Type type1 = this.GetType();
+                BindableProperty.GetBindablePropertysOfType(type1, out nameToBindableProperty1);
+
+                Dictionary<string, BindableProperty> nameToBindableProperty2;
+                Type type2 = that.GetType();
+                BindableProperty.GetBindablePropertysOfType(type2, out nameToBindableProperty2);
+
+                if (null != nameToBindableProperty1)
+                {
+                    foreach (KeyValuePair<string, BindableProperty> keyValuePair in nameToBindableProperty1)
+                    {
+                        BindableProperty bindableProperty;
+                        nameToBindableProperty2.TryGetValue(keyValuePair.Key, out bindableProperty);
+
+                        if (null != bindableProperty)
+                        {
+                            object value = that.GetValue(bindableProperty);
+
+                            if (null != value)
+                            {
+                                SetValue(keyValuePair.Value, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void ListenPropertyChange(BindableProperty bindableProperty, PropertyChangedEventHandler eventHandler)
+        {
+            PropertyChangedListener propertyChangedListener;
+            BindablePropertyChangedEventDict.TryGetValue(bindableProperty.PropertyName, out propertyChangedListener);
+
+            if (null == propertyChangedListener)
+            {
+                propertyChangedListener = new PropertyChangedListener();
+                BindablePropertyChangedEventDict.Add(bindableProperty.PropertyName, propertyChangedListener);
+            }
+
+            propertyChangedListener.PropertyChanged += eventHandler;
+        }
+
+        internal void RemovePropertyChangeListener(BindableProperty bindableProperty, PropertyChangedEventHandler propertyChangedEventHandler)
+        {
+            PropertyChangedListener propertyChangedListener;
+            BindablePropertyChangedEventDict.TryGetValue(bindableProperty.PropertyName, out propertyChangedListener);
+
+            if (null != propertyChangedListener)
+            {
+                propertyChangedListener.PropertyChanged -= propertyChangedEventHandler;
+            }
+        }
+
+        private class PropertyChangedListener
+        {
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public void PropertyHasChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private Dictionary<string, PropertyChangedListener> BindablePropertyChangedEventDict = new Dictionary<string, PropertyChangedListener>();
+
         /// <summary>
         /// Raised whenever the BindingContext property changes.
         /// </summary>
@@ -184,6 +256,13 @@ namespace Tizen.NUI.Binding
             else
             {
                 property.PropertyChanged?.Invoke(this, null, value);
+
+                OnPropertyChanged(property.PropertyName);
+
+                if (BindablePropertyChangedEventDict.ContainsKey(property.PropertyName))
+                {
+                    BindablePropertyChangedEventDict[property.PropertyName].PropertyHasChanged(property.PropertyName);
+                }
             }
         }
 

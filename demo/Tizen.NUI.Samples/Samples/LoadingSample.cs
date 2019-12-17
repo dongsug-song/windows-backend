@@ -38,15 +38,15 @@ namespace Tizen.NUI.Samples
             loading1_1.Position2D = new Position2D(100, 350);
             loading1_1.Size2D = new Size2D(100, 100);
 
-            loading1_1.ImageArray = imageArray;
+            loading1_1.Images = imageArray;
             root.Add(loading1_1);
 
-            LoadingAttributes attr = new LoadingAttributes
+            LoadingStyle style = new LoadingStyle
             {
-                ImageArray = imageArray
+                Images = imageArray
             };
 
-            loading2_1 = new Loading(attr);
+            loading2_1 = new Loading(style);
             loading2_1.Position2D = new Position2D(500, 350);
             loading2_1.Size2D = new Size2D(100, 100);
             root.Add(loading2_1);
@@ -92,7 +92,7 @@ namespace Tizen.NUI.Samples
             button1.BackgroundColor = Color.Green;
             button1.Position2D = new Position2D(80, 600);
             button1.Size2D = new Size2D(100, 50);
-            button1.Text = "FPS++";
+            button1.Style.Text.Text = "FPS++";
             root.Add(button1);
             button1.Focusable = true;
             button1.ClickEvent += Loading1FPSAdd;
@@ -103,7 +103,7 @@ namespace Tizen.NUI.Samples
             button2.BackgroundColor = Color.Green;
             button2.Position2D = new Position2D(200, 600);
             button2.Size2D = new Size2D(100, 50);
-            button2.Text = "FPS--";
+            button2.Style.Text.Text = "FPS--";
             root.Add(button2);
             button2.Focusable = true;
             button2.ClickEvent += Loading1FPSMinus;
@@ -117,7 +117,7 @@ namespace Tizen.NUI.Samples
             button3.BackgroundColor = Color.Green;
             button3.Position2D = new Position2D(450, 600);
             button3.Size2D = new Size2D(180, 50);
-            button3.Text = "Normal Loading";
+            button3.Style.Text.Text = "Normal Loading";
             root.Add(button3);
         }
 

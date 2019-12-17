@@ -25,44 +25,43 @@ namespace Tizen.NUI.Samples
             scrollBar1_1 = new ScrollBar();
             scrollBar1_1.Position2D = new Position2D(50, 300);
             scrollBar1_1.Size2D = new Size2D(300, 4);
-            scrollBar1_1.TrackColor = Color.Green;           
+            scrollBar1_1.Style.Track.BackgroundColor = Color.Green;           
             scrollBar1_1.MaxValue = (int)scrollBar1_1.SizeWidth / 10;
             scrollBar1_1.MinValue = 0;
-            scrollBar1_1.ThumbSize = new Size(30, 4);
+            scrollBar1_1.Style.Thumb.Size = new Size(30, 4);
             scrollBar1_1.CurrentValue = 0; //set after thumbsize
-            scrollBar1_1.ThumbColor = Color.Black;
+            scrollBar1_1.Style.Thumb.BackgroundColor = Color.Black;
             root.Add(scrollBar1_1);
 
             scrollBar1_2 = new ScrollBar();
             scrollBar1_2.Position2D = new Position2D(50, 400);
             scrollBar1_2.Size2D = new Size2D(300, 4);
-            scrollBar1_2.TrackColor = Color.Green;
+            scrollBar1_2.Style.Track.BackgroundColor = Color.Green;
             scrollBar1_2.MaxValue = (int)scrollBar1_2.SizeWidth / 10;
             scrollBar1_2.MinValue = 0;
-            scrollBar1_2.ThumbSize = new Size(30, 4);
+            scrollBar1_2.Style.Thumb.Size = new Size(30, 4);
             scrollBar1_2.CurrentValue = 0;//set after thumbsize
-            scrollBar1_2.ThumbColor = Color.Yellow;
-            scrollBar1_2.TrackImageURL = CommonResource.GetTVResourcePath() + "component/c_progressbar/c_progressbar_white_buffering.png";
+            scrollBar1_2.Style.Thumb.BackgroundColor = Color.Yellow;
+            scrollBar1_2.Style.Track.ResourceUrl = CommonResource.GetTVResourcePath() + "component/c_progressbar/c_progressbar_white_buffering.png";
 
             root.Add(scrollBar1_2);
 
-            ScrollBarAttributes attr = new ScrollBarAttributes
+            ScrollBarStyle attr = new ScrollBarStyle
             {
-                TrackImageAttributes = new ImageAttributes
+                Track = new ImageViewStyle
                 {
-                    BackgroundColor = new ColorSelector
+                    BackgroundColor = new Selector<Color>
                     {
                         All = new Color(0.43f, 0.43f, 0.43f, 0.1f),
                     }
                 },
-                ThumbImageAttributes = new ImageAttributes
+                Thumb = new ImageViewStyle
                 {
-                    BackgroundColor = new ColorSelector
+                    BackgroundColor = new Selector<Color>
                     {
-                        All = new Color(0.0f, 0.0f, 0.0f, 0.2f),
+                        All = new Color(1.0f, 0.0f, 0.0f, 0.2f),
                     }
                 },
-
             };
 
             scrollBar2_1 = new ScrollBar(attr);
@@ -70,7 +69,7 @@ namespace Tizen.NUI.Samples
             scrollBar2_1.Size2D = new Size2D(300, 4);
             scrollBar2_1.MaxValue = (int)scrollBar2_1.SizeWidth / 10;
             scrollBar2_1.MinValue = 0;
-            scrollBar2_1.ThumbSize = new Size(30, 4);
+            scrollBar2_1.Style.Thumb.Size = new Size(30, 4);
             scrollBar2_1.CurrentValue = 0; //set after thumbsize
             root.Add(scrollBar2_1);
 
@@ -127,7 +126,7 @@ namespace Tizen.NUI.Samples
             button1.BackgroundColor = Color.Green;
             button1.Position2D = new Position2D(100, 700);
             button1.Size2D = new Size2D(80, 50);
-            button1.Text = "+";
+            button1.Style.Text.Text = "+";
             root.Add(button1);
             button1.Focusable = true;
             button1.ClickEvent += Scroll1Add;
@@ -136,7 +135,7 @@ namespace Tizen.NUI.Samples
             button2.BackgroundColor = Color.Green;
             button2.Position2D = new Position2D(200, 700);
             button2.Size2D = new Size2D(80, 50);
-            button2.Text = "-";
+            button2.Style.Text.Text = "-";
             root.Add(button2);
             button2.Focusable = true;
             button2.ClickEvent += Scroll1Minus;
@@ -145,7 +144,7 @@ namespace Tizen.NUI.Samples
             button5.BackgroundColor = Color.Green;
             button5.Position2D = new Position2D(400, 800);
             button5.Size2D = new Size2D(100, 50);
-            button5.Text = "+ / - 4";
+            button5.Style.Text.Text = "+ / - 4";
             root.Add(button5);
             button5.Focusable = true;
             button5.ClickEvent += Scroll1_2move;
@@ -154,7 +153,7 @@ namespace Tizen.NUI.Samples
             button22.BackgroundColor = Color.Green;
             button22.Position2D = new Position2D(100, 800);
             button22.Size2D = new Size2D(200, 50);
-            button22.Text = "change direction";
+            button22.Style.Text.Text = "change direction";
             root.Add(button22);
             button22.Focusable = true;
             button22.ClickEvent += Scroll1_2Changed;
@@ -163,7 +162,7 @@ namespace Tizen.NUI.Samples
             button3.BackgroundColor = Color.Green;
             button3.Position2D = new Position2D(450, 700);
             button3.Size2D = new Size2D(80, 50);
-            button3.Text = "+";
+            button3.Style.Text.Text = "+";
             root.Add(button3);
             button3.Focusable = true;
             button3.ClickEvent += Scroll2Add;
@@ -172,7 +171,7 @@ namespace Tizen.NUI.Samples
             button4.BackgroundColor = Color.Green;
             button4.Position2D = new Position2D(550, 700);
             button4.Size2D = new Size2D(80, 50);
-            button4.Text = "-";
+            button4.Style.Text.Text = "-";
             root.Add(button4);
             button4.Focusable = true;
             button4.ClickEvent += Scroll2Minus;
